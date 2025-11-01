@@ -157,9 +157,7 @@ export const verifyEmail = async (req, res) => {
     }
 
     if (user.verifyOtp === "" || user.verifyOtp !== otp) {
-      return res
-        .status(400)
-        .res.json({ success: false, message: "Invalid OTP" });
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
 
     if (user.verifyOtpExpireAt < Date.now()) {
