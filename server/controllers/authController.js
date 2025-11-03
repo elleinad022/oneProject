@@ -270,6 +270,9 @@ export const resetPassword = async (req, res) => {
     user.resetOtpExpireAt = 0;
 
     await user.save();
+    return res
+      .status(201)
+      .json({ success: true, message: "Password has been reset successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
