@@ -4,8 +4,13 @@ import { Link } from "react-router-dom";
 
 const Authform = () => {
   const [state, setState] = useState("Log In");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("submit");
+  };
 
   return (
     <div className="card card-border bg-base-200 w-2xl shadow-md card-xl">
@@ -31,6 +36,8 @@ const Authform = () => {
             name="email"
             className="input w-full"
             placeholder="Type here"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <p className="label">Required</p>
           <legend className="fieldset-legend">Password</legend>
@@ -40,6 +47,8 @@ const Authform = () => {
             name="password"
             className="input w-full"
             placeholder="Type here"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <p className="label">Required</p>
         </fieldset>
