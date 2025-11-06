@@ -4,7 +4,7 @@ import Authform from "../components/Authform";
 const Login = () => {
   return (
     <div>
-      <Authform />
+      <Authform mode="Log In"/>
     </div>
   );
 };

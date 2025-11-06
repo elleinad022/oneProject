@@ -2,10 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Authform = () => {
-  const [state, setState] = useState("Log In");
+const Authform = ({ mode }) => {
+  const [state, setState] = useState(mode);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,11 +31,23 @@ const Authform = () => {
 
         {/* Input Fields */}
         <fieldset className="fieldset w-full max-w-sm">
+          {state !== "Log In" && (
+            <>
+              <legend className="fieldset-legend">Name</legend>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="Type here"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <p className="label">Required</p>
+            </>
+          )}
+
           <legend className="fieldset-legend">Email</legend>
           <input
             type="email"
-            id="email"
-            name="email"
             className="input w-full"
             placeholder="Type here"
             value={email}
@@ -43,26 +57,43 @@ const Authform = () => {
           <legend className="fieldset-legend">Password</legend>
           <input
             type="password"
-            id="password"
-            name="password"
             className="input w-full"
             placeholder="Type here"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <p className="label">Required</p>
+          {state !== "Log In" && (
+            <>
+              <legend className="fieldset-legend">Confirm Password</legend>
+              <input
+                type="password"
+                className="input w-full"
+                placeholder="Type here"
+                value={password2}
+                onChange={(e) => setPassword2(e.target.value)}
+              />
+              <p className="label">Required</p>
+            </>
+          )}
         </fieldset>
 
         {/* Submit Button */}
         <div className="card-actions w-full flex flex-col items-center">
-          <button className="btn btn-wide btn-primary">LOG IN</button>
+          <button type="submit" className="btn btn-wide btn-primary">
+            {state === "Log In" ? "LOG IN" : "SIGN UP"}
+          </button>
         </div>
 
         {/* Footer */}
         <p className="text-sm">
-          Don't have an account yet?{" "}
-          <Link to="/register" className="link link-primary">
-            Register here
+          {state === "Log In"
+            ? "Don't have an account yet?"
+            : "Already have an account?"}{" "}
+          <Link
+            to={state === "Log In" ? "/register" : "/login"}
+            className="link link-primary">
+            {state === "Log In" ? "Register here" : "Log In"}
           </Link>
           .
         </p>
