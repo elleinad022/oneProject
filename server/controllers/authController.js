@@ -2,8 +2,10 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodeMailer.js";
-import { decrypt } from "dotenv";
 
+//@desc Registers user, sets up a cookie
+//Route POST /api/auth/register
+//@access public
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -54,6 +56,9 @@ export const register = async (req, res) => {
   }
 };
 
+//@desc Logs in user, sets up a cookie
+//Route POST /api/auth/login
+//@access public
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -92,6 +97,9 @@ export const login = async (req, res) => {
   }
 };
 
+//@desc Logs out user, clears cookie
+//Route POST /api/auth/logout
+//@access public
 export const logout = async (req, res) => {
   try {
     res.clearCookie("token", {
@@ -106,11 +114,12 @@ export const logout = async (req, res) => {
   }
 };
 
-// Send Verification OTP to User's Email
+//@desc Send Verification OTP to User's Email
+//Route POST /api/auth/send-verify-otp
+//@access private
 export const sendVerifyOtp = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(req.userId);
 
     if (user.isVerified) {
       return res
@@ -143,16 +152,18 @@ export const sendVerifyOtp = async (req, res) => {
   }
 };
 
-//Verify email using OTP
+//@desc Verify email using OTP
+//Route POST /api/auth/verify-account
+//@access private
 export const verifyEmail = async (req, res) => {
-  const { userId, otp } = req.body;
+  const { otp } = req.body;
 
-  if (!userId || !otp) {
-    return res.status(400).json({ success: false, message: "Missing Details" });
+  if (!otp) {
+    return res.status(400).json({ success: false, message: "Missing OTP" });
   }
 
   try {
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(req.userId);
 
     if (!user) {
       return res.status(404).json({ success: false, mesage: "User not found" });
@@ -182,7 +193,9 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-// Check if user is authenticated
+//@desc Check if user is authenticated
+//Route POST /api/auth/is-auth
+//@access private
 export const isAuthenticated = async (req, res) => {
   try {
     return res.status(200).json({ success: true });
@@ -191,7 +204,9 @@ export const isAuthenticated = async (req, res) => {
   }
 };
 
-//Send password reset OTP
+//@desc Send password reset OTP
+//Route POST /api/auth/send-reset-otp
+//@access public
 export const sendResetOtp = async (req, res) => {
   const { email } = req.body;
 
@@ -234,7 +249,9 @@ export const sendResetOtp = async (req, res) => {
   }
 };
 
-//Reset user password using OTP
+//@desc Reset user password using OTP
+//route POST /api/auth/reset-password
+//@access public
 export const resetPassword = async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
@@ -273,6 +290,39 @@ export const resetPassword = async (req, res) => {
     return res
       .status(201)
       .json({ success: true, message: "Password has been reset successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc Update user profile
+// route PUT /api/auth/profile
+// @access private
+export const updateUserProfile = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userId);
+    const { name, email, password } = req.body;
+
+    if (user) {
+      user.name = name || user.name;
+      user.email = email || user.email;
+
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+      }
+
+      const updatedUser = await user.save();
+      return res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

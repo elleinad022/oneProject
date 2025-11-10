@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   useLoginMutation,
   useLazyGetUserDataQuery,
+  useRegisterMutation,
 } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 const Authform = ({ mode }) => {
   const [state, setState] = useState(mode);
@@ -23,6 +25,8 @@ const Authform = ({ mode }) => {
   const [getUserData, { isLoading: isFetchingUser }] =
     useLazyGetUserDataQuery();
 
+  const [register, { isLoading: isRegistering }] = useRegisterMutation();
+
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -34,11 +38,27 @@ const Authform = ({ mode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login({ email, password }).unwrap();
+      if (state === "Log In") {
+        await login({ email, password }).unwrap();
 
-      const userRes = await getUserData().unwrap();
-      dispatch(setCredentials({ ...userRes.userData }));
-      navigate("/");
+        const userRes = await getUserData().unwrap();
+        dispatch(setCredentials({ ...userRes.userData }));
+        navigate("/");
+      } else {
+        if (password !== password2) {
+          toast.error("Passwords do not match");
+        } else {
+          try {
+            await register({ name, email, password }).unwrap();
+
+            const userRes = await getUserData().unwrap();
+            dispatch(setCredentials({ ...userRes.userData }));
+            navigate("/");
+          } catch (err) {
+            toast.error(err?.data?.message || err.error);
+          }
+        }
+      }
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -107,6 +127,9 @@ const Authform = ({ mode }) => {
             </>
           )}
         </fieldset>
+
+        {/* Loading logic */}
+        {(isLoggingIn || isRegistering || isFetchingUser) && <Loader />}
 
         {/* Submit Button */}
         <div className="card-actions w-full flex flex-col items-center">

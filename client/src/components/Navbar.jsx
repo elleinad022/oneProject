@@ -1,10 +1,24 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useLogoutMutation } from "../slices/usersApiSlice";
+import { logout } from "../slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { userInfo } = useSelector((state) => state.auth);
-  console.log(`This is the userInfo:`, userInfo);
-  console.log(`This is the userInfo name:`, userInfo?.name);
+  const [logoutApiCall] = useLogoutMutation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="drawer lg:drawer-open">
@@ -112,17 +126,23 @@ const Navbar = () => {
               </div>
             </div>
 
-            <button className="text-gray-400 hover:text-primary transition-transform duration-300 transform hover:scale-110">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width={32}
-                height={32}
-                viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M5.616 20q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h5.903q.214 0 .357.143t.143.357t-.143.357t-.357.143H5.616q-.231 0-.424.192T5 5.616v12.769q0 .23.192.423t.423.192h5.904q.214 0 .357.143t.143.357t-.143.357t-.357.143zm12.444-7.5H9.692q-.213 0-.356-.143T9.192 12t.143-.357t.357-.143h8.368l-1.971-1.971q-.141-.14-.15-.338q-.01-.199.15-.364q.159-.165.353-.168q.195-.003.36.162l2.614 2.613q.242.243.242.566t-.243.566l-2.613 2.613q-.146.146-.347.153t-.366-.159q-.16-.165-.157-.357t.162-.35z"></path>
-              </svg>
-            </button>
+            <div
+              className="tooltip tooltip-primary tooltip-left"
+              data-tip="Log Out">
+              <button
+                className="text-gray-400 hover:text-primary transition-transform duration-300 transform hover:scale-110"
+                onClick={handleLogout}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={32}
+                  height={32}
+                  viewBox="0 0 24 24">
+                  <path
+                    fill="currentColor"
+                    d="M5.616 20q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h5.903q.214 0 .357.143t.143.357t-.143.357t-.357.143H5.616q-.231 0-.424.192T5 5.616v12.769q0 .23.192.423t.423.192h5.904q.214 0 .357.143t.143.357t-.143.357t-.357.143zm12.444-7.5H9.692q-.213 0-.356-.143T9.192 12t.143-.357t.357-.143h8.368l-1.971-1.971q-.141-.14-.15-.338q-.01-.199.15-.364q.159-.165.353-.168q.195-.003.36.162l2.614 2.613q.242.243.242.566t-.243.566l-2.613 2.613q-.146.146-.347.153t-.366-.159q-.16-.165-.157-.357t.162-.35z"></path>
+                </svg>
+              </button>
+            </div>
           </div>
         </ul>
       </div>
