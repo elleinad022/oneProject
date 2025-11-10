@@ -2,8 +2,7 @@ import userModel from "../models/userModel.js";
 
 export const getUserData = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await userModel.findById(userId);
+    const user = await userModel.findById(req.userId);
 
     if (!user) {
       return res
@@ -14,6 +13,7 @@ export const getUserData = async (req, res) => {
     return res.status(200).json({
       success: true,
       userData: {
+        email: user.email,
         name: user.name,
         isVerified: user.isVerified,
       },
