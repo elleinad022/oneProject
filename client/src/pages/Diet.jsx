@@ -1,11 +1,8 @@
 import React from "react";
+import Navbar from "../components/Navbar";
 
 const Diet = () => {
-  return (
-    <div>
-      <h1>Diet Page</h1>
-    </div>
-  );
+  return <Navbar></Navbar>;
 };
 
 export default Diet;

@@ -1,11 +1,8 @@
 import React from "react";
+import Navbar from "../components/Navbar";
 
 const Workout = () => {
-  return (
-    <div>
-      <h1>Workout Page</h1>
-    </div>
-  );
+  return <Navbar></Navbar>;
 };
 
 export default Workout;

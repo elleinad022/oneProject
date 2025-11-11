@@ -1,10 +1,9 @@
-import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ children }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const [logoutApiCall] = useLogoutMutation();
 
@@ -24,10 +23,11 @@ const Navbar = () => {
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col items-center justify-center">
-        {/* Page content here */}
         <label htmlFor="my-drawer-3" className="btn drawer-button lg:hidden">
           Open drawer
         </label>
+        {/* Page content here */}
+        <main className="flex-1 p-4">{children}</main>
       </div>
       <div className="drawer-side">
         <label
@@ -42,7 +42,7 @@ const Navbar = () => {
             </h1>
 
             <li>
-              <a className="py-5">
+              <Link to="/" className="py-5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={32}
@@ -53,10 +53,10 @@ const Navbar = () => {
                     d="M3 12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zm0 8a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1zm1-17a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1z"></path>
                 </svg>
                 Dashboard
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="py-5">
+              <Link to="/workout" className="py-5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={32}
@@ -67,10 +67,10 @@ const Navbar = () => {
                     d="M6 5v14h3v-6h6v6h3V5h-3v6H9V5zM3 15a1 1 0 0 0 1 1h1V8H4a1 1 0 0 0-1 1v2H2v2h1zm18-6a1 1 0 0 0-1-1h-1v8h1a1 1 0 0 0 1-1v-2h1v-2h-1z"></path>
                 </svg>
                 Workout
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="py-5">
+              <Link to="/diet" className="py-5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={32}
@@ -94,10 +94,10 @@ const Navbar = () => {
                   </g>
                 </svg>
                 Diet
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="py-5">
+              <Link to="/settings" className="py-5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={32}
@@ -109,7 +109,7 @@ const Navbar = () => {
                   </g>
                 </svg>
                 Settings
-              </a>
+              </Link>
             </li>
           </div>
           <div className="flex items-center justify-between mb-6">
