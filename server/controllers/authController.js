@@ -127,10 +127,19 @@ export const sendVerifyOtp = async (req, res) => {
         .json({ success: false, message: "Account already verified" });
     }
 
+    if (Date.now() < user.otpCooldown) {
+      return res.status(429).json({
+        success: false,
+        message:
+          "OTP already sent to email. Please wait before trying to send another OTP",
+      });
+    }
+
     const otp = String(Math.floor(100000 + Math.random() * 900000));
 
     user.verifyOtp = otp;
     user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
+    user.otpCooldown = Date.now() + 90 * 1000;
 
     await user.save();
 
@@ -317,6 +326,10 @@ export const updateUserProfile = async (req, res) => {
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
+        isVerified: updatedUser.isVerified,
+        verifyOtpExpireAt: updatedUser.verifyOtpExpireAt,
+        resetOtpExpireAt: updatedUser.resetOtpExpireAt,
+        otpCooldown: updatedUser.otpCooldown,
       });
     } else {
       return res

@@ -17,6 +17,9 @@ export const getUserData = async (req, res) => {
         email: user.email,
         name: user.name,
         isVerified: user.isVerified,
+        verifyOtpExpireAt: user.verifyOtpExpireAt,
+        resetOtpExpireAt: user.resetOtpExpireAt,
+        otpCooldown: user.otpCooldown,
       },
     });
   } catch (error) {

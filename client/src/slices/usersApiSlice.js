@@ -47,6 +47,24 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    // Send Verify OTP route (auth)
+    sendVerifyOtp: builder.mutation({
+      query: (data) => ({
+        url: `${AUTH_URL}/send-verify-otp`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Verify email address OTP (auth)
+    verifyEmail: builder.mutation({
+      query: (data) => ({
+        url: `${AUTH_URL}/verify-account`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -57,4 +75,6 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useUpdateUserMutation,
+  useSendVerifyOtpMutation,
+  useVerifyEmailMutation,
 } = usersApiSlice;
