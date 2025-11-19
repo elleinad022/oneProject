@@ -1,11 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useLoginMutation,
   useLazyGetUserDataQuery,
   useRegisterMutation,
+  useSendResetOtpMutation,
 } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
@@ -24,8 +25,8 @@ const Authform = ({ mode }) => {
   const [login, { isLoading: isLoggingIn }] = useLoginMutation();
   const [getUserData, { isLoading: isFetchingUser }] =
     useLazyGetUserDataQuery();
-
   const [register, { isLoading: isRegistering }] = useRegisterMutation();
+  const [resetOtp] = useSendResetOtpMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -59,6 +60,22 @@ const Authform = ({ mode }) => {
           }
         }
       }
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const sendResetOtp = async () => {
+    if (!email) {
+      toast.error(
+        "Please provide the email address to receive password reset OTP"
+      );
+      return;
+    }
+
+    try {
+      await resetOtp({ email }).unwrap();
+      navigate("/forgot-password");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -112,7 +129,15 @@ const Authform = ({ mode }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <p className="label">Required</p>
+          <div className="flex flex-row justify-between">
+            <p className="label">Required</p>
+            <button
+              type="button"
+              onClick={sendResetOtp}
+              className="text-secondary font-bold link-hover">
+              Forgot Password?
+            </button>
+          </div>
           {state !== "Log In" && (
             <>
               <legend className="fieldset-legend">Confirm Password</legend>

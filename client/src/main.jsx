@@ -17,12 +17,14 @@ import Login from "./pages/Login";
 import Workout from "./pages/Workout";
 import Diet from "./pages/Diet";
 import Settings from "./pages/Settings.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* Private Routes */}
       <Route path="" element={<PrivateRoute />}>
