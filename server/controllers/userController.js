@@ -1,5 +1,8 @@
 import userModel from "../models/userModel.js";
 
+//@desc Gets user data
+//Route GET /api/user/data
+//@access private
 export const getUserData = async (req, res) => {
   try {
     const user = await userModel.findById(req.userId);

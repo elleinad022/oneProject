@@ -131,12 +131,16 @@ const Authform = ({ mode }) => {
           />
           <div className="flex flex-row justify-between">
             <p className="label">Required</p>
-            <button
-              type="button"
-              onClick={sendResetOtp}
-              className="text-secondary font-bold link-hover">
-              Forgot Password?
-            </button>
+            {state === "Log In" && (
+              <>
+                <button
+                  type="button"
+                  onClick={sendResetOtp}
+                  className="text-secondary font-bold link-hover">
+                  Forgot Password?
+                </button>
+              </>
+            )}
           </div>
           {state !== "Log In" && (
             <>

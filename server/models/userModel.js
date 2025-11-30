@@ -10,6 +10,13 @@ const userSchema = new mongoose.Schema({
   resetOtp: { type: String, default: "" },
   resetOtpExpireAt: { type: Number, default: 0 },
   otpCooldown: { type: Number, default: 0 },
+
+  dailyCalorieGoal: { type: Number, default: 2000 },
+  macros: {
+    protein: { type: Number, default: 0 },
+    carbohydrates: { type: Number, default: 0 },
+    fats: { type: Number, default: 0 },
+  },
 });
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
