@@ -1,7 +1,7 @@
 import dailyCalorieLogModel from "../models/dailyCalorieLogModel.js";
 
 //@desc Gets/Creates instance of calorie log today
-//Route GET api/calories/init
+//Route GET api/calories/init-calorie
 //@access private
 export const initTodayLog = async (req, res) => {
   try {
@@ -35,7 +35,7 @@ export const initTodayLog = async (req, res) => {
 };
 
 //@desc Adds a meal entry into daily calorie log
-//Route POST api/calorie/mealEntry
+//Route POST api/calories/add-meal
 //@access private
 export const addMealEntry = async (req, res) => {
   try {
@@ -67,9 +67,10 @@ export const addMealEntry = async (req, res) => {
 
     todayLog.entries.push({
       description,
-      calories,
+      calories: Number(calories),
     });
-    todayLog.caloriesConsumed += calories;
+    todayLog.caloriesConsumed =
+      Number(todayLog.caloriesConsumed) + Number(calories);
     await todayLog.save();
 
     todayLog = await todayLog.populate("user", "dailyCalorieGoal macros");
@@ -83,7 +84,7 @@ export const addMealEntry = async (req, res) => {
 };
 
 //@desc Get today's calorie log for the user
-//Route GET api/calories/today
+//Route GET api/calories/calorie-day-log
 //@access Private
 export const getTodayLog = async (req, res) => {
   try {
@@ -128,12 +129,15 @@ export const getTodayLog = async (req, res) => {
 };
 
 //@desc Get last 7 days of calorie logs
-//Route GET api/calories/weekly
+//Route GET api/calories/calorie-week-log
 //@access Private
 export const getWeeklyLogs = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999); // end of today
 
     const userId = req.userId;
 
@@ -143,7 +147,7 @@ export const getWeeklyLogs = async (req, res) => {
     const logs = await dailyCalorieLogModel
       .find({
         user: userId,
-        date: { $gte: sevenDaysAgo, $lte: today },
+        date: { $gte: sevenDaysAgo, $lte: endOfToday },
       })
       .sort({ date: 1 }) //ascending by date
       .populate("user", "dailyCalorieGoal macros");
