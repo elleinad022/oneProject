@@ -44,12 +44,22 @@ export const addMealEntry = async (req, res) => {
     startOfToday.setHours(0, 0, 0, 0);
     const endOfToday = new Date();
     endOfToday.setHours(23, 59, 59, 999);
-    const { description, calories } = req.body;
+    const { description, calories, protein, carbs, fats } = req.body;
 
-    if (!description || calories == null || isNaN(calories)) {
+    if (
+      !description ||
+      calories == null ||
+      isNaN(calories) ||
+      protein == null ||
+      isNaN(protein) ||
+      carbs == null ||
+      isNaN(carbs) ||
+      fats == null ||
+      isNaN(fats)
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Valid Description and calories are required",
+        message: "Valid Description, calories, and macros are required",
       });
     }
 
@@ -68,9 +78,16 @@ export const addMealEntry = async (req, res) => {
     todayLog.entries.push({
       description,
       calories: Number(calories),
+      protein: Number(protein),
+      carbs: Number(carbs),
+      fats: Number(fats),
     });
     todayLog.caloriesConsumed =
       Number(todayLog.caloriesConsumed) + Number(calories);
+    todayLog.proteinConsumed =
+      Number(todayLog.proteinConsumed) + Number(protein);
+    todayLog.carbsConsumed = Number(todayLog.carbsConsumed) + Number(carbs);
+    todayLog.fatsConsumed = Number(todayLog.fatsConsumed) + Number(fats);
     await todayLog.save();
 
     todayLog = await todayLog.populate("user", "dailyCalorieGoal macros");
@@ -104,16 +121,18 @@ export const getTodayLog = async (req, res) => {
       .populate("user", "dailyCalorieGoal macros");
 
     if (!todayLog) {
+      const user = await userModel
+        .findById(userId)
+        .select("_id dailyCalorieGoal macros");
       return res.status(200).json({
         success: true,
         todayLog: {
-          user: {
-            _id: userId,
-            dailyCalorieGoal: null,
-            macros: null,
-          },
+          user,
           date: new Date(),
           caloriesConsumed: 0,
+          proteinConsumed: 0,
+          carbsConsumed: 0,
+          fatsConsumed: 0,
           entries: [],
         },
       });
