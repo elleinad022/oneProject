@@ -67,7 +67,7 @@ const Linegraph = () => {
         pointHoverRadius: 7,
       },
       {
-        label: "Goal Calories",
+        label: `Goal kcal: ${calorieGoal}`,
         data: calorieGoalLine,
         borderWidth: 1,
         borderColor: secondary,
