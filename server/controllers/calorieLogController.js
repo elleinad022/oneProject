@@ -181,6 +181,9 @@ export const getWeeklyLogs = async (req, res) => {
       chartData.unshift({
         date: date.toDateString(),
         calories: log ? log.caloriesConsumed : 0,
+        proteinConsumed: log ? log.proteinConsumed : 0,
+        carbsConsumed: log ? log.carbsConsumed : 0,
+        fatsConsumed: log ? log.fatsConsumed : 0,
       });
     }
 

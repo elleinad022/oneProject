@@ -20,6 +20,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USERS_URL}/data`,
         credentials: "include",
       }),
+      providesTags: ["User"],
     }),
 
     // Register route (auth)
@@ -46,6 +47,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
 
     // Send Verify OTP route (auth)

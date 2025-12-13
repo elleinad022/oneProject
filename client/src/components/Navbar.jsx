@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { useGetTodayCaloriesQuery } from "../slices/caloriesApiSlice";
 
 const Navbar = ({ children }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -9,6 +10,16 @@ const Navbar = ({ children }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { data: calData, isLoading } = useGetTodayCaloriesQuery();
+  const dailyGoal = userInfo?.dailyCalorieGoal ?? 0;
+  const caloriesConsumed = calData?.todayLog?.caloriesConsumed ?? 0;
+  const caloriesLeft = dailyGoal - caloriesConsumed;
+  const caloriesLeftText =
+    caloriesLeft >= 0
+      ? `${caloriesLeft} kcal left`
+      : `Over by ${caloriesLeft} kcal`;
+
   const handleLogout = async () => {
     try {
       await logoutApiCall().unwrap();
@@ -20,7 +31,7 @@ const Navbar = ({ children }) => {
   };
 
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open overflow-x-hidden">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col items-center justify-center">
         <label htmlFor="my-drawer-3" className="btn drawer-button lg:hidden">
@@ -122,7 +133,9 @@ const Navbar = ({ children }) => {
 
               <div className="flex flex-col">
                 <span className="font-semibold">{userInfo?.name}</span>
-                <span className="text-sm text-gray-400">Cal. Left</span>
+                <span className="text-sm text-gray-400">
+                  {caloriesLeftText}
+                </span>
               </div>
             </div>
 

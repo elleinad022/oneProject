@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useSelector } from "react-redux";
 import Loader from "./Loader";
 
 import { useGetWeeklyCaloriesQuery } from "../slices/caloriesApiSlice";
@@ -29,6 +30,9 @@ const Linegraph = () => {
   const primary = "#FF79C6";
   const accent = "#6272A4";
 
+  const { userInfo } = useSelector((state) => state.auth);
+  const calorieGoal = userInfo?.dailyCalorieGoal ?? 0;
+
   const { data: calData, isLoading } = useGetWeeklyCaloriesQuery();
 
   if (isLoading) {
@@ -39,11 +43,12 @@ const Linegraph = () => {
     );
   }
 
-  // Dummy labels for days of the week
   const labels =
     calData?.chartData?.map((entry) =>
       new Date(entry.date).toLocaleDateString("en-US", { weekday: "short" })
     ) || [];
+
+  const calorieGoalLine = labels.map(() => calorieGoal);
 
   const calories = calData?.chartData?.map((entry) => entry.calories) || [];
 
@@ -61,6 +66,15 @@ const Linegraph = () => {
         pointRadius: 4,
         pointHoverRadius: 7,
       },
+      {
+        label: "Goal Calories",
+        data: calorieGoalLine,
+        borderWidth: 1,
+        borderColor: secondary,
+        borderDash: [6, 6],
+        pointRadius: 0,
+        tooltip: { enabled: false },
+      },
     ],
   };
 
@@ -69,7 +83,23 @@ const Linegraph = () => {
     plugins: {
       legend: { display: true },
       title: { display: true, text: "Weekly Calorie Intake" },
+      tooltip: {
+        filter: (tooltipItem) =>
+          tooltipItem.dataset.label === "Calories Consumed",
+        callbacks: {
+          label: (context) => {
+            const dayData = calData.chartData[context.dataIndex];
+            return [
+              `Calories: ${dayData.calories}`,
+              `Protein: ${dayData.proteinConsumed}g`,
+              `Carbs: ${dayData.carbsConsumed}g`,
+              `Fats: ${dayData.fatsConsumed}g`,
+            ];
+          },
+        },
+      },
     },
+
     scales: {
       x: {
         grid: {
@@ -77,7 +107,8 @@ const Linegraph = () => {
         },
       },
       y: {
-        beginAtZero: false,
+        beginAtZero: true,
+        suggestedMax: Math.max(...calories, calorieGoal) + 200,
         grid: {
           display: false, // remove horizontal grid lines
         },
@@ -86,7 +117,7 @@ const Linegraph = () => {
   };
 
   return (
-    <div className="w-full max-w-lg h-[200px] mx-auto">
+    <div className="w-full h-44 mx-auto">
       <Line
         data={data}
         options={{

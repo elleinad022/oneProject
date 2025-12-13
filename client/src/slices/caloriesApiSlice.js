@@ -9,8 +9,17 @@ export const caloriesApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${CAL_URL}/calorie-week-log`,
       }),
+      providesTags: ["Logs"],
+    }),
+    // Get daily calories route (calories)
+    getTodayCalories: builder.query({
+      query: () => ({
+        url: `${CAL_URL}/calorie-day-log`,
+      }),
+      providesTags: ["Logs"],
     }),
   }),
 });
 
-export const { useGetWeeklyCaloriesQuery } = caloriesApiSlice;
+export const { useGetWeeklyCaloriesQuery, useGetTodayCaloriesQuery } =
+  caloriesApiSlice;
