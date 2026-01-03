@@ -2,14 +2,31 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  password: { type: String, default: null },
   verifyOtp: { type: String, default: "" },
   verifyOtpExpireAt: { type: Number, default: 0 },
   isVerified: { type: Boolean, default: false },
   resetOtp: { type: String, default: "" },
   resetOtpExpireAt: { type: Number, default: 0 },
   otpCooldown: { type: Number, default: 0 },
+
+  googleId: {
+    type: String,
+    default: null,
+  },
+
+  authProvider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
+  },
 
   dailyCalorieGoal: { type: Number, default: 2000 },
   macros: {

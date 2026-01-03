@@ -2,6 +2,77 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodeMailer.js";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+//@desc Login or Register via Google
+//Route POST /api/auth/google
+//@access public
+export const googleLogin = async (req, res) => {
+  const { credential } = req.body;
+
+  if (!credential) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Missing google credential" });
+  }
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const { sub: googleId, email, name, email_verified } = payload;
+
+    if (!email_verified) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Google email not verified" });
+    }
+
+    let user = await userModel.findOne({ email });
+
+    if (user) {
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.authProvider = "google";
+        user.isVerified = true;
+        await user.save();
+      }
+    } else {
+      user = await userModel.create({
+        name,
+        email,
+        googleId,
+        authProvider: "google",
+        isVerified: "true",
+        password: null,
+      });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Google login error", error);
+    return res
+      .status(401)
+      .json({ success: false, message: "Google authentication failed" });
+  }
+};
 
 //@desc Registers user, sets up a cookie
 //Route POST /api/auth/register

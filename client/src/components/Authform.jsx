@@ -7,10 +7,13 @@ import {
   useLazyGetUserDataQuery,
   useRegisterMutation,
   useSendResetOtpMutation,
+  useGoogleLoginMutation,
 } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+
+import { GoogleLogin } from "@react-oauth/google";
 
 const Authform = ({ mode }) => {
   const [state, setState] = useState(mode);
@@ -27,6 +30,7 @@ const Authform = ({ mode }) => {
     useLazyGetUserDataQuery();
   const [register, { isLoading: isRegistering }] = useRegisterMutation();
   const [resetOtp] = useSendResetOtpMutation();
+  const [googleLogin] = useGoogleLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -76,6 +80,20 @@ const Authform = ({ mode }) => {
     try {
       await resetOtp({ email }).unwrap();
       navigate("/forgot-password");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      await googleLogin({
+        credential: credentialResponse?.credential,
+      }).unwrap();
+
+      const userRes = await getUserData().unwrap();
+
+      dispatch(setCredentials({ ...userRes.userData }));
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -165,6 +183,18 @@ const Authform = ({ mode }) => {
           <button type="submit" className="btn btn-wide btn-primary">
             {state === "Log In" ? "LOG IN" : "SIGN UP"}
           </button>
+        </div>
+
+        {/* Google Log In */}
+        <div style={{ colorScheme: "light" }}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => toast.error("Google Login Failed")}
+            type="standard"
+            shape="rectangular"
+            theme="filled_black"
+            width={255}
+          />
         </div>
 
         {/* Footer */}

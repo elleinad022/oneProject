@@ -19,6 +19,8 @@ import Diet from "./pages/Diet";
 import Settings from "./pages/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -28,7 +30,7 @@ const router = createBrowserRouter(
 
       {/* Private Routes */}
       <Route path="" element={<PrivateRoute />}>
-        <Route index={true} path="/" element={<Dashboard />} />
+        <Route index element={<Dashboard />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/diet" element={<Diet />} />
         <Route path="/settings" element={<Settings />} />
@@ -38,9 +40,11 @@ const router = createBrowserRouter(
 );
 
 createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
-  </Provider>
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <Provider store={store}>
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    </Provider>
+  </GoogleOAuthProvider>
 );

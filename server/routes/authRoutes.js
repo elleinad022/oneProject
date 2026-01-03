@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  googleLogin,
   isAuthenticated,
   login,
   logout,
@@ -14,6 +15,7 @@ import userAuth from "../middleware/userAuth.js";
 
 const authRouter = express.Router();
 
+authRouter.post("/google", googleLogin);
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.post("/logout", logout);
