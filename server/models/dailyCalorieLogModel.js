@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const dailyCalorieLogSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+      index: true,
+    },
     date: { type: Date, required: true, unique: false },
     caloriesConsumed: { type: Number, default: 0 },
     proteinConsumed: { type: Number, default: 0 },

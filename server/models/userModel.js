@@ -34,6 +34,18 @@ const userSchema = new mongoose.Schema({
     carbohydrates: { type: Number, default: 0 },
     fats: { type: Number, default: 0 },
   },
+
+  currentWeight: {
+    type: Number,
+    min: 0,
+    default: null,
+  },
+
+  goalWeight: {
+    type: Number,
+    min: 0,
+    default: null,
+  },
 });
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
