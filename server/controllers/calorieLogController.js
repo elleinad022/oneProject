@@ -100,6 +100,56 @@ export const addMealEntry = async (req, res) => {
   }
 };
 
+//@desc Deletes a meal entry from daily calorie log
+//Route DELETE api/calories/delete-meal/:entryId
+//@access private
+export const deleteMealEntry = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { entryId } = req.params;
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    const todayLog = await dailyCalorieLogModel.findOne({
+      user: userId,
+      date: { $gte: startOfToday, $lte: endOfToday },
+    });
+
+    if (!todayLog) {
+      return res.status(404).json({ success: false, message: "No Log Found" });
+    }
+
+    const entry = todayLog.entries.id(entryId);
+    if (!entry) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Meal not found" });
+    }
+
+    // Remove deleted macros
+    todayLog.caloriesConsumed -= entry.calories;
+    todayLog.proteinConsumed -= entry.protein;
+    todayLog.carbsConsumed -= entry.carbs;
+    todayLog.fatsConsumed -= entry.fats;
+
+    // Remove entry
+    todayLog.entries.pull(entryId);
+    await todayLog.save();
+
+    return res.status(200).json({ success: true, todayLog });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//@desc Updates a meal entry from daily calorie log
+//Route PUT api/calories/update-meal/:entryId
+//@access private
+
 //@desc Get today's calorie log for the user
 //Route GET api/calories/calorie-day-log
 //@access Private
