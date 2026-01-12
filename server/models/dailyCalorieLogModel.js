@@ -27,6 +27,9 @@ const dailyCalorieLogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// One log per user per day
+dailyCalorieLogSchema.index({ user: 1, date: 1 }, { unique: true });
+
 const dailyCalorieLogModel =
   mongoose.models.dailyCalorieLog ||
   mongoose.model("dailyCalorieLog", dailyCalorieLogSchema);
