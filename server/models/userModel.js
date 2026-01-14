@@ -35,6 +35,8 @@ const userSchema = new mongoose.Schema({
     fats: { type: Number, default: 0 },
   },
 
+  dailyWaterGoal: { type: Number, default: 3000 },
+
   currentWeight: {
     type: Number,
     min: 0,
