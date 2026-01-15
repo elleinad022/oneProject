@@ -1,4 +1,5 @@
 import dailyCalorieLogModel from "../models/dailyCalorieLogModel.js";
+import userModel from "../models/userModel.js";
 
 //@desc Gets/Creates instance of calorie log today
 //Route GET api/calories/init-calorie
@@ -209,6 +210,8 @@ export const updateMealEntry = async (req, res) => {
 
     await todayLog.save();
 
+    todayLog = await todayLog.populate("user", "dailyCalorieGoal macros");
+
     return res.status(200).json({ success: true, todayLog });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -243,7 +246,7 @@ export const getTodayLog = async (req, res) => {
         success: true,
         todayLog: {
           user,
-          date: new Date(),
+          date: startOfToday,
           caloriesConsumed: 0,
           proteinConsumed: 0,
           carbsConsumed: 0,

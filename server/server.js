@@ -8,6 +8,7 @@ import authRouter from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import calorieLogRouter from "./routes/calorieLogRoutes.js";
 import bodyWeightLogRouter from "./routes/bodyWeightLogRoutes.js";
+import waterLogRouter from "./routes/waterLogRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -28,6 +29,7 @@ app.get("/", (req, res) => res.send("API is Working"));
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/calories", calorieLogRouter);
+app.use("/api/water", waterLogRouter);
 app.use("/api/bodyweight", bodyWeightLogRouter);
 
 app.listen(port, () => console.log(`Server started on PORT: ${port}`));
