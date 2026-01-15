@@ -72,7 +72,6 @@ export const addWaterEntry = async (req, res) => {
 
     await todayWaterLog.save();
 
-    todayWaterLog = await todayWaterLog.populate("user", "dailyWaterGoal");
     return res.status(200).json({
       success: true,
       todayWaterLog,
@@ -172,8 +171,6 @@ export const updateWaterEntry = async (req, res) => {
     todayWaterLog.waterConsumed += waterEntry.waterAmount;
     await todayWaterLog.save();
 
-    todayWaterLog = await todayWaterLog.populate("user", "dailyWaterGoal");
-
     return res.status(200).json({ success: true, todayWaterLog });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -193,10 +190,12 @@ export const getWaterTodayLog = async (req, res) => {
     const endOfToday = new Date();
     endOfToday.setHours(23, 59, 59, 999);
 
-    let todayWaterLog = await dailyWaterLogModel.findOne({
-      user: userId,
-      date: { $gte: startOfToday, $lte: endOfToday },
-    });
+    let todayWaterLog = await dailyWaterLogModel
+      .findOne({
+        user: userId,
+        date: { $gte: startOfToday, $lte: endOfToday },
+      })
+      .populate("user", "dailyWaterGoal");
 
     if (!todayWaterLog) {
       const user = await userModel

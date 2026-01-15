@@ -91,7 +91,6 @@ export const addMealEntry = async (req, res) => {
     todayLog.fatsConsumed = Number(todayLog.fatsConsumed) + Number(fats);
     await todayLog.save();
 
-    todayLog = await todayLog.populate("user", "dailyCalorieGoal macros");
     return res.status(200).json({
       success: true,
       todayLog,
@@ -209,8 +208,6 @@ export const updateMealEntry = async (req, res) => {
     todayLog.fatsConsumed += entry.fats;
 
     await todayLog.save();
-
-    todayLog = await todayLog.populate("user", "dailyCalorieGoal macros");
 
     return res.status(200).json({ success: true, todayLog });
   } catch (error) {
