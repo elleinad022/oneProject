@@ -1,5 +1,6 @@
-import featuredMealModel from "../models/featuredMealModel";
-import userMealHistoryModel from "../models/userMealHistoryModel";
+import featuredMealModel from "../models/featuredMealModel.js";
+import userMealHistoryModel from "../models/userMealHistoryModel.js";
+import { fetchAndCacheMealsFromSpoonacular } from "../services/spoonacularService.js";
 
 // @desc Get today's featured meals for user
 // Route GET api/featured-meals/today
@@ -10,6 +11,12 @@ export const getFeaturedMealsToday = async (req, res) => {
 
     const cooldownDate = new Date();
     cooldownDate.setHours(cooldownDate.getHours() - 48);
+
+    const mealCount = await featuredMealModel.countDocuments();
+
+    if (mealCount < 50) {
+      await fetchAndCacheMealsFromSpoonacular();
+    }
 
     const recentMeals = await userMealHistoryModel
       .find({
@@ -22,14 +29,13 @@ export const getFeaturedMealsToday = async (req, res) => {
     const excludedMealIds = recentMeals.map((entry) => entry.meal.toString());
 
     // Get new meals excluding the ones recently seen for past 48 hrs
-    const availableMeals = await featuredMealModel.find({
+    let availableMeals = await featuredMealModel.find({
       _id: { $nin: excludedMealIds },
     });
 
-    if (!availableMeals.length) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No available meals to feature" });
+    if (availableMeals.length < 3) {
+      //Ignore 48hr cooldown if not enough meals are present to exclude recent meals
+      availableMeals = await featuredMealModel.find();
     }
 
     const shuffledMeals = availableMeals.sort(() => 0.5 - Math.random());
