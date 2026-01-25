@@ -2,27 +2,34 @@ import mongoose from "mongoose";
 
 const workoutPreferencesSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+
   daysPerWeek: { type: Number, min: 2, max: 6, required: true },
-  sessionLength: { type: Number, min: 30, max: 120, required: true },
+
+  sessionDuration: { type: Number, min: 30, max: 120, required: true },
+
   fitnessLevel: {
     type: String,
-    enum: ["beginner", "intermediate", "advanced"],
+    enum: ["Beginner", "Intermediate", "Advanced"],
     required: true,
   },
+
   primaryGoal: {
     type: String,
-    enum: ["strength", "hypertrophy", "endurance"],
+    enum: ["Muscle Gain", "Fat Loss", "Strength", "Endurance"],
     required: true,
   },
-  equipment: {
-    type: [String],
-    enum: ["bodyweight", "dumbbells", "barbell", "full gym"],
-    required: true,
-  },
-  splitPreference: {
+
+  preferences: {
     type: String,
-    enum: ["push/pull/legs", "upper/lower", "full body", "no preference"],
-    required: true,
+    enum: [
+      "Bodybuilding",
+      "Power building",
+      "Hiit",
+      "Functional Training",
+      "Cardio",
+      "General Fitness",
+    ],
+    default: "General Fitness",
   },
 });
 
