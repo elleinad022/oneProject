@@ -101,3 +101,104 @@ export const initWorkoutPreferences = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+//@desc Update workout preferences and workout program
+//Route PUT api/workout/update-preferences
+//@access Private
+export const updateWorkoutPreferences = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const {
+      daysPerWeek,
+      sessionDuration,
+      fitnessLevel,
+      primaryGoal,
+      preferences,
+    } = req.body;
+
+    if (
+      [
+        daysPerWeek,
+        sessionDuration,
+        fitnessLevel,
+        primaryGoal,
+        preferences,
+      ].some((setting) => setting == null)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid preferences are required.",
+      });
+    }
+
+    let source = "cache";
+
+    const updatedPreferences = await workoutPreferencesModel.findOneAndUpdate(
+      {
+        user: userId,
+      },
+      {
+        daysPerWeek,
+        sessionDuration,
+        fitnessLevel,
+        primaryGoal,
+        preferences,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    if (!updatedPreferences) {
+      return res.status(404).json({
+        success: false,
+        message: "Workout preferences not found",
+      });
+    }
+
+    const preferencesHash = hashWorkoutPreferences({
+      daysPerWeek: updatedPreferences.daysPerWeek,
+      sessionDuration: updatedPreferences.sessionDuration,
+      fitnessLevel: updatedPreferences.fitnessLevel,
+      primaryGoal: updatedPreferences.primaryGoal,
+      preferences: updatedPreferences.preferences,
+    });
+
+    let workoutPlan = await cachedWorkoutPlanModel.findOne({
+      preferencesHash,
+    });
+
+    if (!workoutPlan) {
+      const generatedPlan = await callRapidApiAndParse(updatedPreferences);
+      try {
+        workoutPlan = await cachedWorkoutPlanModel.create({
+          preferencesHash,
+          preferences: updatedPreferences.preferences,
+          ...generatedPlan,
+        });
+
+        source = "generated";
+      } catch (error) {
+        if (error.code === 11000) {
+          workoutPlan = await cachedWorkoutPlanModel.findOne({
+            preferencesHash,
+          });
+          source = "cache";
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      workoutPreferences: updatedPreferences,
+      workoutPlan,
+      source,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
