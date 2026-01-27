@@ -37,6 +37,12 @@ const userSchema = new mongoose.Schema({
 
   dailyWaterGoal: { type: Number, default: 3000 },
 
+  startWeight: {
+    type: Number,
+    min: 0,
+    default: null,
+  },
+
   currentWeight: {
     type: Number,
     min: 0,

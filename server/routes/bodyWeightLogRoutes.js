@@ -12,7 +12,7 @@ const bodyWeightLogRouter = express.Router();
 
 bodyWeightLogRouter.post("/log", userAuth, logBodyWeight);
 bodyWeightLogRouter.get("/goal", userAuth, getBodyWeightGoal);
-bodyWeightLogRouter.post("/set-goal", userAuth, setBodyWeightGoal);
+bodyWeightLogRouter.patch("/set-goal", userAuth, setBodyWeightGoal);
 bodyWeightLogRouter.get("/latest", userAuth, getBodyWeightLatest);
 bodyWeightLogRouter.get("/history", userAuth, getBodyWeightHistory);
 

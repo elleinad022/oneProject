@@ -55,26 +55,45 @@ export const getBodyWeightGoal = async (req, res) => {
 };
 
 //@desc Sets bodyweight goal
-//Route POST api/bodyweight/set-goal
+//Route PATCH api/bodyweight/set-goal
 //@access private
 export const setBodyWeightGoal = async (req, res) => {
   try {
     const userId = req.userId;
     const user = await userModel.findById(userId);
 
-    const { weightGoal } = req.body;
-    if (weightGoal == null || isNaN(weightGoal)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Valid weight goal is required" });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    user.goalWeight = weightGoal;
+    const { weightGoal, startWeight } = req.body;
+    if (weightGoal != null && isNaN(weightGoal)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid weight goal" });
+    }
+    if (startWeight != null && isNaN(startWeight)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid starting weight" });
+    }
+
+    //Update only fields provided by user
+    if (weightGoal != null) user.weightGoal = weightGoal;
+    if (startWeight != null) user.startWeight = startWeight;
     await user.save();
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Goal weight was set successfully" });
+    return res.status(201).json({
+      success: true,
+      message: "Body weight goal updated successfully",
+      user: {
+        weightGoal: user.weightGoal,
+        startWeight: user.startWeight,
+      },
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
