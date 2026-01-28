@@ -9,12 +9,30 @@ export const getFeaturedMealsToday = async (req, res) => {
   try {
     const userId = req.userId;
 
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    let todayMealsHistory = await userMealHistoryModel
+      .find({
+        user: userId,
+        seenAt: { $gte: startOfToday },
+      })
+      .populate("meal");
+
+    if (todayMealsHistory.length > 0) {
+      const mealsForToday = todayMealsHistory
+        .slice(0, 3)
+        .map((entry) => entry.meal);
+      return res.status(200).json({ success: true, meals: mealsForToday });
+    }
+
     const cooldownDate = new Date();
     cooldownDate.setHours(cooldownDate.getHours() - 48);
 
     const mealCount = await featuredMealModel.countDocuments();
+    const MIN_MEALS = 120;
 
-    if (mealCount < 50) {
+    if (mealCount < MIN_MEALS) {
       await fetchAndCacheMealsFromSpoonacular();
     }
 
