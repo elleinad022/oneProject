@@ -13,6 +13,16 @@ const workoutDaySchema = new mongoose.Schema({
   exercises: [exerciseDetailSchema],
 });
 
+const programStepSchema = new mongoose.Schema({
+  indexType: {
+    type: String,
+    enum: ["workout", "rest"],
+    required: true,
+  },
+  label: String,
+  exercises: [exerciseDetailSchema],
+});
+
 const cachedWorkoutPlanSchema = new mongoose.Schema({
   preferencesHash: { type: String, required: true, unique: true },
   preferences: { type: String },
@@ -24,6 +34,7 @@ const cachedWorkoutPlanSchema = new mongoose.Schema({
   },
   totalWeeks: Number,
   plan: [workoutDaySchema],
+  programSteps: [programStepSchema],
   seo_title: { type: String },
   seo_content: { type: String },
   createdAt: { type: Date, default: Date.now },

@@ -1,7 +1,9 @@
 import express from "express";
 import {
+  advanceWorkoutIndex,
   getWorkoutProgram,
   initWorkoutPreferences,
+  resetWorkoutIndexes,
   updateWorkoutPreferences,
 } from "../controllers/workoutProgramController.js";
 
@@ -20,5 +22,7 @@ workoutProgramRouter.post(
   userAuth,
   initWorkoutPreferences,
 );
+workoutProgramRouter.post("/advance-index", userAuth, advanceWorkoutIndex);
+workoutProgramRouter.post("/reset-program", userAuth, resetWorkoutIndexes);
 
 export default workoutProgramRouter;

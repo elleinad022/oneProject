@@ -54,6 +54,18 @@ const userSchema = new mongoose.Schema({
     min: 0,
     default: null,
   },
+
+  workoutTrackingIndex: {
+    type: Number,
+    min: 0,
+    default: 0,
+  },
+
+  workoutWeekIndex: {
+    type: Number,
+    min: 0,
+    default: 0,
+  },
 });
 
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
