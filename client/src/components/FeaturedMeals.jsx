@@ -5,7 +5,6 @@ import { useGetFeaturedMealsTodayQuery } from "../slices/featuredMealApiSlice";
 const FeaturedMeals = () => {
   const { data, isLoading } = useGetFeaturedMealsTodayQuery();
   const meals = data?.meals;
-  console.log(meals?.[0]);
 
   if (isLoading) {
     return (

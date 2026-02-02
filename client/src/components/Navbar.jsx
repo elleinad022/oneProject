@@ -38,7 +38,7 @@ const Navbar = ({ children }) => {
           Open drawer
         </label>
         {/* Page content here */}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1 overflow-hidden min-h-0">{children}</main>
       </div>
       <div className="drawer-side">
         <label

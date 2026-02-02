@@ -18,9 +18,14 @@ const authSlice = createSlice({
       state.userInfo = null;
       localStorage.removeItem("userInfo");
     },
+    updateWorkoutIndexes: (state, action) => {
+      state.userInfo.workoutTrackingIndex = action.payload.workoutTrackingIndex;
+      state.userInfo.workoutWeekIndex = action.payload.workoutWeekIndex;
+    },
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, updateWorkoutIndexes } =
+  authSlice.actions;
 
 export default authSlice.reducer;

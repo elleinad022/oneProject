@@ -34,21 +34,25 @@ const Water = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <h2 className="py-2 px-18 bg-base-100 mb-4 rounded-xl">Water Intake</h2>
-      <div
-        className="radial-progress"
-        style={{
-          "--value": percentageConsumed,
-          "--size": "6rem",
-          "--thickness": "2px",
-        }}
-        aria-valuenow={70}
-        role="progressbar">
-        {percentageConsumed}%
+      <h2 className="w-full text-center bg-base-100 mb-4 rounded-xl">
+        Water Intake
+      </h2>
+      <div className="flex flex-row gap-x-5">
+        <div
+          className="radial-progress"
+          style={{
+            "--value": percentageConsumed,
+            "--size": "4rem",
+            "--thickness": "2px",
+          }}
+          aria-valuenow={70}
+          role="progressbar">
+          {percentageConsumed}%
+        </div>
+        <p className="text-zinc-400 text-md mt-4">
+          {waterConsumedToday}ML/{goalWater}ML
+        </p>
       </div>
-      <p className="text-zinc-400 text-sm mt-4">
-        {waterConsumedToday}ML/{goalWater}ML
-      </p>
     </div>
   );
 };

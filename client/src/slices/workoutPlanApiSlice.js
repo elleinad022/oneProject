@@ -28,6 +28,22 @@ export const workoutPlanApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["workoutProgram"],
     }),
+    // Advance workout progress index route (workout)
+    advanceWorkoutIndex: builder.mutation({
+      query: () => ({
+        url: `${WORKOUT_PLAN_URL}/advance-index`,
+        method: "POST",
+      }),
+      invalidatesTags: ["workoutProgram"],
+    }),
+    // Reset workout progress index route (workout)
+    resetWorkoutIndexes: builder.mutation({
+      query: () => ({
+        url: `${WORKOUT_PLAN_URL}/reset-program`,
+        method: "POST",
+      }),
+      invalidatesTags: ["workoutProgram"],
+    }),
   }),
 });
 
@@ -35,4 +51,6 @@ export const {
   useGetWorkoutProgramQuery,
   useInitWorkoutPreferencesMutation,
   useUpdateWorkoutPreferencesMutation,
+  useAdvanceWorkoutIndexMutation,
+  useResetWorkoutIndexesMutation,
 } = workoutPlanApiSlice;
