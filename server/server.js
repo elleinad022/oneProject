@@ -11,6 +11,7 @@ import bodyWeightLogRouter from "./routes/bodyWeightLogRoutes.js";
 import waterLogRouter from "./routes/waterLogRoutes.js";
 import featuredMealsRouter from "./routes/featuredMealsRoutes.js";
 import workoutProgramRouter from "./routes/workoutPlanRoutes.js";
+import personalRecordRouter from "./routes/personalRecordRoutes.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -35,5 +36,6 @@ app.use("/api/water", waterLogRouter);
 app.use("/api/bodyweight", bodyWeightLogRouter);
 app.use("/api/featured-meals", featuredMealsRouter);
 app.use("/api/workout", workoutProgramRouter);
+app.use("/api/progress", personalRecordRouter);
 
 app.listen(port, () => console.log(`Server started on PORT: ${port}`));
