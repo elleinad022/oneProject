@@ -7,6 +7,7 @@ import { normalizeExerciseName } from "../utils/normalizeExerciseName.js";
 export const createProgressTracker = async (req, res) => {
   try {
     const userId = req.userId;
+    // UNITS: ["kg", "lbs", "reps", "minutes"]
     const { exercise, unit } = req.body;
 
     if (!exercise || !unit) {

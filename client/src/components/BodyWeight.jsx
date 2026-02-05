@@ -21,7 +21,7 @@ const BodyWeight = () => {
 
   const latestLoggedAt = data?.latestBodyWeightLog.loggedAt;
   const formattedDate = latestLoggedAt
-    ? new Date(latestLoggedAt).toLocaleDateString(undefined, {
+    ? new Date(latestLoggedAt).toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",

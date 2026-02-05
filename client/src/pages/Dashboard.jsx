@@ -7,6 +7,7 @@ import BodyWeight from "../components/BodyWeight";
 import Water from "../components/Water";
 import FeaturedMeals from "../components/featuredMeals";
 import WorkoutPlan from "../components/WorkoutPlan";
+import PersonalRecords from "../components/PersonalRecords";
 
 const Dashboard = () => {
   return (
@@ -36,6 +37,9 @@ const Dashboard = () => {
             </div>
             <div className="col-span-3 bg-base-300 rounded-xl overflow-y-auto">
               <WorkoutPlan></WorkoutPlan>
+            </div>
+            <div className="col-span-1 bg-base-200 rounded-xl min-w-0 min-h-0">
+              <PersonalRecords></PersonalRecords>
             </div>
           </div>
         </div>
