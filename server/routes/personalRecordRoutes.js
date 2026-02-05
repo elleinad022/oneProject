@@ -12,7 +12,7 @@ import userAuth from "../middleware/userAuth.js";
 const personalRecordRouter = express.Router();
 
 personalRecordRouter.post("/create-tracker", userAuth, createProgressTracker);
-personalRecordRouter.post("/add-entry", userAuth, addProgressEntry);
+personalRecordRouter.post("/add-entry/:trackerId", userAuth, addProgressEntry);
 personalRecordRouter.get("/all-trackers", userAuth, getTrackers);
 personalRecordRouter.put(
   "/edit-progress/:trackerId/:entryId",

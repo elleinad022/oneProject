@@ -29,6 +29,11 @@ const progressTrackerSchema = new mongoose.Schema(
       required: true,
     },
 
+    normalizedExercise: {
+      type: String,
+      required: true,
+    },
+
     unit: {
       type: String,
       enum: ["kg", "lbs", "reps", "minutes"],
@@ -39,7 +44,10 @@ const progressTrackerSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-progressTrackerSchema.index({ user: 1, exercise: 1 }, { unique: true });
+progressTrackerSchema.index(
+  { user: 1, normalizedExercise: 1 },
+  { unique: true },
+);
 
 const progressTrackerModel =
   mongoose.models.progressTracker ||

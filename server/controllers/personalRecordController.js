@@ -1,4 +1,5 @@
-import progressTrackerModel from "../models/personalRecordModel";
+import progressTrackerModel from "../models/personalRecordModel.js";
+import { normalizeExerciseName } from "../utils/normalizeExerciseName.js";
 
 //@desc Create a progress tracker
 //Route POST api/progress/create-tracker
@@ -15,9 +16,12 @@ export const createProgressTracker = async (req, res) => {
       });
     }
 
+    const normalizedExercise = normalizeExerciseName(exercise);
+
     const tracker = await progressTrackerModel.create({
       user: userId,
-      exercise,
+      exercise: exercise.trim(),
+      normalizedExercise,
       unit,
       entries: [],
     });
@@ -39,7 +43,7 @@ export const createProgressTracker = async (req, res) => {
 };
 
 //@desc Add tracker entry
-//Route POST api/progress/add-entry
+//Route POST api/progress/add-entry/:trackerId
 //@access Private
 export const addProgressEntry = async (req, res) => {
   try {
@@ -105,7 +109,7 @@ export const updateProgressEntry = async (req, res) => {
     const { value, note } = req.body;
 
     const tracker = await progressTrackerModel.findOne({
-      _id: tracker,
+      _id: trackerId,
       user: userId,
     });
 
