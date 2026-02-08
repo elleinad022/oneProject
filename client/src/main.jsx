@@ -16,6 +16,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Workout from "./pages/Workout";
 import Diet from "./pages/Diet";
+import Records from "./pages/Records.jsx";
 import Settings from "./pages/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 
@@ -33,10 +34,11 @@ const router = createBrowserRouter(
         <Route index element={<Dashboard />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/diet" element={<Diet />} />
+        <Route path="/records" element={<Records />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 createRoot(document.getElementById("root")).render(
@@ -46,5 +48,5 @@ createRoot(document.getElementById("root")).render(
         <RouterProvider router={router} />
       </StrictMode>
     </Provider>
-  </GoogleOAuthProvider>
+  </GoogleOAuthProvider>,
 );

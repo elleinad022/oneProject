@@ -1,4 +1,5 @@
 import React from "react";
+import AtomicBackground from "../components/AtomicBackground";
 import Navbar from "../components/Navbar";
 import Linegraph from "../components/Linegraph";
 import Doughnutgraph from "../components/Doughnutgraph";
@@ -13,6 +14,7 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar>
+        <AtomicBackground></AtomicBackground>
         <div className="h-screen p-4">
           <div className="grid grid-cols-4 grid-rows-2 gap-3 w-full h-full min-h-0">
             <div className="col-span-2 flex flex-col min-w-0 max-w-3xl gap-y-5 bg-base-300 p-4 rounded-xl">

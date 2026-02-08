@@ -6,6 +6,87 @@
   themes: dracula;
 }
 
+@keyframes atom-float1 {
+  0% {
+    transform: rotate(0deg) translateX(200px) translateY(0px) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) translateX(190px) translateY(40px) scale(1.02);
+  }
+  50% {
+    transform: rotate(180deg) translateX(220px) translateY(-30px) scale(1.05);
+  }
+  75% {
+    transform: rotate(270deg) translateX(210px) translateY(20px) scale(1.03);
+  }
+  100% {
+    transform: rotate(360deg) translateX(200px) translateY(0px) scale(1);
+  }
+}
+
+@keyframes atom-float2 {
+  0% {
+    transform: rotate(0deg) translateX(220px) translateY(0px) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) translateX(200px) translateY(-50px) scale(0.9);
+  }
+  50% {
+    transform: rotate(180deg) translateX(190px) translateY(30px) scale(0.95);
+  }
+  75% {
+    transform: rotate(270deg) translateX(210px) translateY(-20px) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) translateX(220px) translateY(0px) scale(1);
+  }
+}
+
+@keyframes atom-float3 {
+  0% {
+    transform: rotate(0deg) translateX(250px) translateY(0px) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) translateX(220px) translateY(50px) scale(1.05);
+  }
+  50% {
+    transform: rotate(180deg) translateX(200px) translateY(-40px) scale(1);
+  }
+  75% {
+    transform: rotate(270deg) translateX(210px) translateY(30px) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) translateX(250px) translateY(0px) scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-fill {
+    animation-fill-mode: both;
+  }
+  .animation-offset-0 {
+    animation-delay: 0s;
+  }
+  .animation-offset-6 {
+    animation-delay: -6s;
+  }
+  .animation-offset-10 {
+    animation-delay: -10s;
+  }
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .no-spinner {
+    -moz-appearance: textfield;
+  }
+}
+
+@theme {
+  --blob: blob 7s infinite;
+}
+
 * {
   font-family: "Manrope", sans-serif;
 }

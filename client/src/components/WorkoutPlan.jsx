@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   useGetWorkoutProgramQuery,
   useAdvanceWorkoutIndexMutation,
+  useResetWorkoutIndexesMutation,
 } from "../slices/workoutPlanApiSlice";
 
 const WorkoutPlan = () => {
@@ -14,6 +15,8 @@ const WorkoutPlan = () => {
   const dispatch = useDispatch();
   const [advanceWorkoutIndex, { isLoading: isAdvancing }] =
     useAdvanceWorkoutIndexMutation();
+  const [resetWorkoutIndex, { isLoading: isResetting }] =
+    useResetWorkoutIndexesMutation();
 
   const programSteps = data?.workoutPlan?.programSteps ?? [];
   const programTitle = data?.workoutPlan?.seo_title;
@@ -42,10 +45,32 @@ const WorkoutPlan = () => {
     }
   };
 
+  const handleProgramReset = async () => {
+    if (!window.confirm("Reset workout progress to the beginning?")) return;
+    try {
+      const res = await resetWorkoutIndex().unwrap();
+      dispatch(
+        updateWorkoutIndexes({
+          workoutTrackingIndex: res.workoutTrackingIndex,
+          workoutWeekIndex: res.workoutWeekIndex,
+        }),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
-      <div className="p-4">
+      <div className="p-4 flex flex-row justify-between">
         <h1 className="font-semibold truncate text-xl">{programTitle}</h1>
+        <button
+          className="btn btn-neutral"
+          type="button"
+          disabled={isResetting}
+          onClick={handleProgramReset}>
+          {isResetting ? "Resetting..." : "Reset Program"}
+        </button>
       </div>
       <table className="table table-zebra">
         {/* head */}
