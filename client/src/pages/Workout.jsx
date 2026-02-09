@@ -1,9 +1,81 @@
 import React from "react";
 import Navbar from "../components/Navbar";
-import AtomicBackground from "../components/AtomicBackground";
-import WorkoutPlan from "../components/WorkoutPlan";
+import Loader from "../components/Loader";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import {
+  useGetWorkoutProgramQuery,
+  useInitWorkoutPreferencesMutation,
+  useUpdateWorkoutPreferencesMutation,
+} from "../slices/workoutPlanApiSlice";
+import { updateWorkoutIndexes } from "../slices/authSlice";
 
 const Workout = () => {
+  const [updateWorkoutPreferences, { isLoading: isUpdating }] =
+    useUpdateWorkoutPreferencesMutation();
+  const [initWorkoutPreferences, { isLoading: isInitializing }] =
+    useInitWorkoutPreferencesMutation();
+  const { data, isLoading } = useGetWorkoutProgramQuery();
+  const dispatch = useDispatch();
+  const currentPlan = data?.workoutPlan;
+
+  const [daysPerWeek, setDaysPerWeek] = useState("");
+  const [sessionDuration, setSessionDuration] = useState("");
+  const [fitnessLevel, setFitnessLevel] = useState("");
+  const [primaryGoal, setPrimaryGoal] = useState("");
+  const [preferences, setPreferences] = useState("");
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-lg h-[200px] mx-auto flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  const appliedPlan = data?.workoutPlan?.plan;
+
+  const handleUpdateButton = async () => {
+    if (daysPerWeek && (daysPerWeek < 2 || daysPerWeek > 6)) {
+      toast.error("Workout days must be between 2 and 6");
+      return;
+    }
+
+    if (sessionDuration && (sessionDuration < 30 || sessionDuration > 120)) {
+      toast.error("Session duration must be between 30 and 120 minutes");
+      return;
+    }
+    try {
+      const payload = {
+        daysPerWeek: daysPerWeek || currentPlan.schedule.daysPerWeek,
+        sessionDuration:
+          sessionDuration || currentPlan.schedule.sessionDuration,
+        fitnessLevel: fitnessLevel || currentPlan.fitnessLevel,
+        primaryGoal: primaryGoal || currentPlan.goal,
+        preferences: preferences || currentPlan.preferences,
+      };
+
+      await updateWorkoutPreferences(payload).unwrap();
+
+      dispatch(
+        updateWorkoutIndexes({
+          workoutTrackingIndex: 0,
+          workoutWeekIndex: 0,
+        }),
+      );
+
+      toast.success("Workout preferences updated successfully");
+      setDaysPerWeek("");
+      setSessionDuration("");
+      setFitnessLevel("");
+      setPrimaryGoal("");
+      setPreferences("");
+    } catch (error) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
   return (
     <div>
       <Navbar>
@@ -14,24 +86,26 @@ const Workout = () => {
             </legend>
 
             <h2 className="label text-lg">Workout days per week</h2>
-            <p className="text-sm">3 Days</p>
+            <p className="text-sm">
+              {data?.workoutPlan?.schedule?.daysPerWeek} Days
+            </p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Session Duration</h2>
-            <p className="text-sm">45 Minutes</p>
+            <p className="text-sm">
+              {data?.workoutPlan?.schedule?.sessionDuration} Minutes
+            </p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Fitness Level</h2>
-            <p className="text-sm">Beginner</p>
+            <p className="text-sm">{data?.workoutPlan?.fitnessLevel}</p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Primary Goal</h2>
-            <p className="text-sm">Fat Loss</p>
+            <p className="text-sm">{data?.workoutPlan?.goal}</p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Preferences</h2>
-            <p className="text-sm">Cardio</p>
+            <p className="text-sm">{data?.workoutPlan?.preferences}</p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Workout Program Title</h2>
-            <p className="text-sm">
-              Beginner Fat Loss Workout Plan - 3 Days Per Week
-            </p>
+            <p className="text-sm">{data?.workoutPlan?.seo_title}</p>
           </fieldset>
           <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-lg border p-4">
             <legend className="fieldset-legend text-lg">
@@ -44,6 +118,8 @@ const Workout = () => {
               min={2}
               max={6}
               className="input w-full no-spinner"
+              value={daysPerWeek}
+              onChange={(e) => setDaysPerWeek(Number(e.target.value))}
               placeholder="2 to 6 days"
             />
 
@@ -53,12 +129,20 @@ const Workout = () => {
               min={30}
               max={120}
               className="input w-full no-spinner"
+              value={sessionDuration}
+              onChange={(e) => setSessionDuration(Number(e.target.value))}
               placeholder="30 to 120 minutes"
             />
 
             <label className="label">Fitness Level</label>
-            <select defaultValue="Choose fitness level" className="select">
-              <option disabled={true}>Choose fitness level</option>
+            <select
+              defaultValue="Choose fitness level"
+              className="select"
+              value={fitnessLevel}
+              onChange={(e) => setFitnessLevel(e.target.value)}>
+              <option value="" disabled={true}>
+                Choose fitness level
+              </option>
               <option>Beginner</option>
               <option>Intermediate</option>
               <option>Advanced</option>
@@ -66,8 +150,14 @@ const Workout = () => {
             <span className="label">Required</span>
 
             <label className="label">Primary Goal</label>
-            <select defaultValue="Choose primary goal" className="select">
-              <option disabled={true}>Choose primary goal</option>
+            <select
+              defaultValue="Choose primary goal"
+              className="select"
+              value={primaryGoal}
+              onChange={(e) => setPrimaryGoal(e.target.value)}>
+              <option value="" disabled={true}>
+                Choose primary goal
+              </option>
               <option>Muscle Gain</option>
               <option>Fat Loss</option>
               <option>Strength</option>
@@ -76,14 +166,28 @@ const Workout = () => {
             <span className="label">Required</span>
 
             <label className="label">Preferences</label>
-            <select defaultValue="Choose preferences" className="select">
-              <option disabled={true}>Choose preferences</option>
-              <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Advanced</option>
+            <select
+              defaultValue="Choose preferences"
+              className="select"
+              value={preferences}
+              onChange={(e) => setPreferences(e.target.value)}>
+              <option value="" disabled={true}>
+                Choose preferences
+              </option>
+              <option>Bodybuilding</option>
+              <option>Power building</option>
+              <option>Hiit</option>
+              <option>Functional Training</option>
+              <option>Cardio</option>
+              <option>General Fitness</option>
             </select>
             <span className="label">Optional</span>
-            <button className="btn btn-primary">Update Preferences</button>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={handleUpdateButton}>
+              Update Preferences
+            </button>
           </fieldset>
           <div className="col-span-2 card w-full bg-base-100 card-xl shadow-sm">
             <div className="card-body">

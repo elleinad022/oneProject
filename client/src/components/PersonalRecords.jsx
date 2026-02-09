@@ -28,7 +28,6 @@ const PersonalRecords = () => {
       note: latestEntry?.note ?? null,
     };
   });
-  console.log(recordsOverview);
 
   if (isLoading) {
     return (

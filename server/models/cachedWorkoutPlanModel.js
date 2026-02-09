@@ -29,12 +29,18 @@ const cachedWorkoutPlanSchema = new mongoose.Schema({
   goal: String,
   fitnessLevel: String,
   schedule: {
-    daysPerWeek: Number,
-    sessionDuration: Number,
+    daysPerWeek: { type: Number, required: true },
+    sessionDuration: { type: Number, required: true },
   },
   totalWeeks: Number,
-  plan: [workoutDaySchema],
-  programSteps: [programStepSchema],
+  plan: {
+    type: [workoutDaySchema],
+    required: true,
+  },
+  programSteps: {
+    type: [programStepSchema],
+    required: true,
+  },
   seo_title: { type: String },
   seo_content: { type: String },
   createdAt: { type: Date, default: Date.now },

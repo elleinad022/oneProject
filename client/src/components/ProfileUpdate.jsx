@@ -172,7 +172,6 @@ const ProfileUpdate = () => {
                 </p>
                 <div className="modal-action justify-center">
                   <div className="w-full">
-                    {/* if there is a button in div, it will close the modal */}
                     <fieldset className="fieldset">
                       <legend className="fieldset-legend">
                         OTP sent to your email
@@ -205,8 +204,6 @@ const ProfileUpdate = () => {
             </dialog>
           </div>
         </div>
-
-        {/* Center this Loader */}
 
         <button className="btn btn-primary mt-4 relative">
           {isUpdating && (

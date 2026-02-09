@@ -177,11 +177,13 @@ export const updateWorkoutPreferences = async (req, res) => {
 
     if (!workoutPlan) {
       const generatedPlan = await callRapidApiAndParse(updatedPreferences);
+      const programSteps = buildProgramSteps(generatedPlan.plan);
       try {
         workoutPlan = await cachedWorkoutPlanModel.create({
           preferencesHash,
           preferences: updatedPreferences.preferences,
           ...generatedPlan,
+          programSteps,
         });
 
         source = "generated";

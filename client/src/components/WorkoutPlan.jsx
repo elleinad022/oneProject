@@ -1,5 +1,6 @@
 import React from "react";
 import Loader from "./Loader";
+import { toast } from "react-toastify";
 import { updateWorkoutIndexes } from "../slices/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -11,6 +12,7 @@ import {
 const WorkoutPlan = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const { data, isLoading } = useGetWorkoutProgramQuery();
+  console.log(data);
 
   const dispatch = useDispatch();
   const [advanceWorkoutIndex, { isLoading: isAdvancing }] =
@@ -20,6 +22,10 @@ const WorkoutPlan = () => {
 
   const programSteps = data?.workoutPlan?.programSteps ?? [];
   const programTitle = data?.workoutPlan?.seo_title;
+  console.log({
+    stepsLength: programSteps.length,
+    trackingIndex: userInfo?.workoutTrackingIndex,
+  });
 
   const programLayout = programSteps.slice(userInfo?.workoutTrackingIndex ?? 0);
 
@@ -40,8 +46,9 @@ const WorkoutPlan = () => {
           workoutWeekIndex: res.workoutWeekIndex,
         }),
       );
+      toast.success("Program advanced successfully");
     } catch (error) {
-      console.error(error);
+      toast.error(err?.data?.message || err.error);
     }
   };
 
@@ -55,8 +62,9 @@ const WorkoutPlan = () => {
           workoutWeekIndex: res.workoutWeekIndex,
         }),
       );
+      toast.success("Reset Program successful");
     } catch (error) {
-      console.error(error);
+      toast.error(err?.data?.message || err.error);
     }
   };
 
