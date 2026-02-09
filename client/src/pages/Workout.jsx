@@ -26,15 +26,8 @@ const Workout = () => {
   const [primaryGoal, setPrimaryGoal] = useState("");
   const [preferences, setPreferences] = useState("");
 
-  if (isLoading) {
-    return (
-      <div className="w-full max-w-lg h-[200px] mx-auto flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
-
   const appliedPlan = data?.workoutPlan?.plan;
+  console.log(appliedPlan);
 
   const handleUpdateButton = async () => {
     if (daysPerWeek && (daysPerWeek < 2 || daysPerWeek > 6)) {
@@ -182,29 +175,35 @@ const Workout = () => {
               <option>General Fitness</option>
             </select>
             <span className="label">Optional</span>
+
+            {(isUpdating || isInitializing || isLoading) && <Loader />}
             <button
+              disabled={isUpdating}
               className="btn btn-primary"
               type="button"
               onClick={handleUpdateButton}>
-              Update Preferences
+              {isUpdating ? "Updating" : "Update Preferences"}
             </button>
           </fieldset>
           <div className="col-span-2 card w-full bg-base-100 card-xl shadow-sm">
             <div className="card-body">
               <h2 className="card-title">Current Workout Plan</h2>
               <div className="bg-base-300 shadow-sm flex flex-row justify-around">
-                <div>
-                  <h3>Workout Day 1</h3>
-                  <p>Exercises:</p>
-                </div>
-                <div>
-                  <h3>Workout Day 1</h3>
-                  <p>Exercises:</p>
-                </div>
-                <div>
-                  <h3>Workout Day 1</h3>
-                  <p>Exercises:</p>
-                </div>
+                {appliedPlan.map((dayPlan, index) => (
+                  <div key={dayPlan._id}>
+                    <h3 className="label">Workout Day {index + 1}</h3>
+
+                    <ul>
+                      {dayPlan.exercises.map((exercise, exerciseIndex) => (
+                        <li className="text-sm border-t" key={exercise._id}>
+                          {exercise.name} <br />
+                          Reps: {exercise.repetitions} <br />
+                          Sets: {exercise.sets} <br />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

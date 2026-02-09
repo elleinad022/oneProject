@@ -21,6 +21,7 @@ const PersonalRecords = () => {
       : "";
 
     return {
+      _id: tracker._id,
       exercise: tracker.exercise,
       unit: tracker.unit,
       latestValue: latestEntry?.value ?? null,
@@ -43,7 +44,7 @@ const PersonalRecords = () => {
 
       {recordsOverview.map((tracker) => {
         return (
-          <li className="list-row flex items-center">
+          <li key={tracker._id} className="list-row flex items-center">
             <div className="flex flex-col flex-1 min-w-0 list-col-grow">
               <div className="uppercase">{tracker.exercise}</div>
               <div className="text-xs uppercase font-semibold text-secondary">

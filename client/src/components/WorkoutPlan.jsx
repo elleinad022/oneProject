@@ -12,7 +12,6 @@ import {
 const WorkoutPlan = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const { data, isLoading } = useGetWorkoutProgramQuery();
-  console.log(data);
 
   const dispatch = useDispatch();
   const [advanceWorkoutIndex, { isLoading: isAdvancing }] =
@@ -22,10 +21,6 @@ const WorkoutPlan = () => {
 
   const programSteps = data?.workoutPlan?.programSteps ?? [];
   const programTitle = data?.workoutPlan?.seo_title;
-  console.log({
-    stepsLength: programSteps.length,
-    trackingIndex: userInfo?.workoutTrackingIndex,
-  });
 
   const programLayout = programSteps.slice(userInfo?.workoutTrackingIndex ?? 0);
 
