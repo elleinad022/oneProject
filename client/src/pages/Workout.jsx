@@ -26,7 +26,7 @@ const Workout = () => {
   const [primaryGoal, setPrimaryGoal] = useState("");
   const [preferences, setPreferences] = useState("");
 
-  const appliedPlan = data?.workoutPlan?.plan;
+  const appliedPlan = data?.workoutPlan?.plan ?? [];
   console.log(appliedPlan);
 
   const handleUpdateButton = async () => {
@@ -186,19 +186,20 @@ const Workout = () => {
             </button>
           </fieldset>
           <div className="col-span-2 card w-full bg-base-100 card-xl shadow-sm">
-            <div className="card-body">
+            <div className="card-body py-0">
               <h2 className="card-title">Current Workout Plan</h2>
-              <div className="bg-base-300 shadow-sm flex flex-row justify-around">
+              <div className="bg-base-300 shadow-sm flex flex-row justify-around max-h-[325px] overflow-y-auto rounded-xl">
                 {appliedPlan.map((dayPlan, index) => (
                   <div key={dayPlan._id}>
                     <h3 className="label">Workout Day {index + 1}</h3>
 
                     <ul>
-                      {dayPlan.exercises.map((exercise, exerciseIndex) => (
+                      {dayPlan.exercises?.map((exercise, exerciseIndex) => (
                         <li className="text-sm border-t" key={exercise._id}>
                           {exercise.name} <br />
-                          Reps: {exercise.repetitions} <br />
-                          Sets: {exercise.sets} <br />
+                          <p>Reps: {exercise.repetitions}</p>
+                          <p>Sets: {exercise.sets} </p>
+                          <p>Duration: {exercise.durationMinutes}</p>
                         </li>
                       ))}
                     </ul>

@@ -38,7 +38,7 @@ const PersonalRecords = () => {
     );
   }
   return (
-    <ul className="list bg-base-300 rounded-xl shadow-md w-full">
+    <ul className="list bg-base-300 rounded-xl shadow-md w-full max-h-full overflow-y-auto">
       <li className="p-4 pb-2 text-lg tracking-wide">Records Overview</li>
       <div className="divider m-0"></div>
 
