@@ -81,7 +81,22 @@ const Navbar = ({ children }) => {
               </Link>
             </li>
             <li>
-              <Link to="/diet" className="py-5">
+              <Link to="/nutrition" className="py-5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 2048 2048">
+                  <path
+                    fill="#fff"
+                    d="M1668 129h124v1919H256V129h126V0h128v129h258V0h128v129h258V0h128v129h258V0h128zm-4 1791V257H384v1663zM1408 513v128H640V513zM640 1666v-128h768v128zm0-513v-128h768v128z"
+                  />
+                </svg>
+                Nutrition
+              </Link>
+            </li>
+            <li>
+              <Link to="/menu" className="py-5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width={32}
@@ -104,7 +119,7 @@ const Navbar = ({ children }) => {
                       d="M7.661 8.389h5.252q.123-.444.124-.988c0-1.76-.99-2.75-2.75-2.75s-2.75.99-2.75 2.75q0 .544.124.988"></path>
                   </g>
                 </svg>
-                Diet
+                Menu
               </Link>
             </li>
             <li>

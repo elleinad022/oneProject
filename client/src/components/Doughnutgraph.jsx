@@ -16,7 +16,7 @@ const Doughnutgraph = () => {
 
   const options = {
     responsive: true,
-    maintainAspectRaio: false,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       title: { display: true, text: "Goal Macros" },

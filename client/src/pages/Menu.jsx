@@ -1,8 +1,8 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 
-const Diet = () => {
+const Menu = () => {
   return <Navbar></Navbar>;
 };
 
-export default Diet;
+export default Menu;

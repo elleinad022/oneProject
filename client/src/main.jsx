@@ -15,7 +15,8 @@ import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Workout from "./pages/Workout";
-import Diet from "./pages/Diet";
+import Nutrition from "./pages/Nutrition.jsx";
+import Menu from "./pages/Menu.jsx";
 import Records from "./pages/Records.jsx";
 import Settings from "./pages/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
@@ -33,7 +34,8 @@ const router = createBrowserRouter(
       <Route path="" element={<PrivateRoute />}>
         <Route index element={<Dashboard />} />
         <Route path="/workout" element={<Workout />} />
-        <Route path="/diet" element={<Diet />} />
+        <Route path="/nutrition" element={<Nutrition />} />
+        <Route path="/menu" element={<Menu />} />
         <Route path="/records" element={<Records />} />
         <Route path="/settings" element={<Settings />} />
       </Route>

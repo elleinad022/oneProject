@@ -18,9 +18,26 @@ export const usersApiSlice = apiSlice.injectEndpoints({
     getUserData: builder.query({
       query: () => ({
         url: `${USERS_URL}/data`,
-        credentials: "include",
       }),
       providesTags: ["User"],
+    }),
+    // Update user daily water goal route (user)
+    updateUserWaterGoal: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/update-water-goal`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    // Update user calorie goal route (user)
+    updateUserCalorieGoal: builder.mutation({
+      query: (data) => ({
+        url: `${USERS_URL}/update-calorie-goals`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
     }),
 
     // Register route (auth)
@@ -109,4 +126,6 @@ export const {
   useSendResetOtpMutation,
   useResetPasswordMutation,
   useGoogleLoginMutation,
+  useUpdateUserCalorieGoalMutation,
+  useUpdateUserWaterGoalMutation,
 } = usersApiSlice;
