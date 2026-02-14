@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import Loader from "./Loader";
 
 import { useGetWeeklyCaloriesQuery } from "../slices/caloriesApiSlice";
+import { useGetWaterWeekLogQuery } from "../slices/waterApiSlice";
 
 ChartJS.register(
   CategoryScale,
@@ -22,18 +23,27 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
-const Linegraph = () => {
+const Linegraph = ({ type = "calories" }) => {
   const secondary = "#BD93F9";
   const primary = "#FF79C6";
-  const accent = "#6272A4";
 
   const { userInfo } = useSelector((state) => state.auth);
   const calorieGoal = userInfo?.dailyCalorieGoal ?? 0;
+  const waterGoal = userInfo?.dailyWaterGoal ?? 0;
 
-  const { data: calData, isLoading } = useGetWeeklyCaloriesQuery();
+  const { data: calData, isLoading: calLoading } = useGetWeeklyCaloriesQuery(
+    undefined,
+    { skip: type !== "calories" },
+  );
+  const { data: waterData, isLoading: waterLoading } = useGetWaterWeekLogQuery(
+    undefined,
+    { skip: type !== "water" },
+  );
+
+  const isLoading = type === "calories" ? calLoading : waterLoading;
 
   if (isLoading) {
     return (
@@ -43,22 +53,29 @@ const Linegraph = () => {
     );
   }
 
+  const rawData =
+    type === "calories" ? calData?.chartData : waterData?.chartData;
+
+  const goal = type === "calories" ? calorieGoal : waterGoal;
+
   const labels =
-    calData?.chartData?.map((entry) =>
-      new Date(entry.date).toLocaleDateString("en-US", { weekday: "short" })
+    rawData?.map((entry) =>
+      new Date(entry.date).toLocaleDateString("en-US", { weekday: "short" }),
     ) || [];
 
-  const calorieGoalLine = labels.map(() => calorieGoal);
+  const goalLine = labels.map(() => goal);
 
-  const calories = calData?.chartData?.map((entry) => entry.calories) || [];
+  const values =
+    type === "calories"
+      ? rawData?.map((entry) => entry.calories) || []
+      : rawData?.map((entry) => entry.waterConsumed);
 
-  // Dummy weekly calorie intake data
   const data = {
     labels,
     datasets: [
       {
-        label: "Calories Consumed",
-        data: calories,
+        label: type === "calories" ? "Calories Consumed" : "Water consumed(ml)",
+        data: values,
         borderWidth: 2,
         borderColor: primary,
         backgroundColor: primary + "55",
@@ -67,8 +84,8 @@ const Linegraph = () => {
         pointHoverRadius: 7,
       },
       {
-        label: `Goal kcal: ${calorieGoal}`,
-        data: calorieGoalLine,
+        label: type === "calories" ? `Goal kcal: ${goal}` : `Goal ml ${goal}`,
+        data: goalLine,
         borderWidth: 1,
         borderColor: secondary,
         borderDash: [6, 6],
@@ -80,23 +97,34 @@ const Linegraph = () => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: true },
-      title: { display: true, text: "Weekly Calorie Intake" },
+      title: {
+        display: true,
+        text:
+          type === "calories" ? "Weekly Calorie Intake" : "Weekly Water Intake",
+      },
       tooltip: {
-        filter: (tooltipItem) =>
-          tooltipItem.dataset.label === "Calories Consumed",
-        callbacks: {
-          label: (context) => {
-            const dayData = calData.chartData[context.dataIndex];
-            return [
-              `Calories: ${dayData.calories}`,
-              `Protein: ${dayData.proteinConsumed}g`,
-              `Carbs: ${dayData.carbsConsumed}g`,
-              `Fats: ${dayData.fatsConsumed}g`,
-            ];
-          },
-        },
+        callbacks:
+          type === "calories"
+            ? {
+                label: (context) => {
+                  const dayData = rawData[context.dataIndex];
+                  return [
+                    `Calories: ${dayData.calories}`,
+                    `Protein: ${dayData.proteinConsumed}g`,
+                    `Carbs: ${dayData.carbsConsumed}g`,
+                    `Fats: ${dayData.fatsConsumed}g`,
+                  ];
+                },
+              }
+            : {
+                label: (context) => {
+                  const dayData = rawData[context.dataIndex];
+                  return `Water: ${dayData.waterConsumed} ml`;
+                },
+              },
       },
     },
 
@@ -108,7 +136,7 @@ const Linegraph = () => {
       },
       y: {
         beginAtZero: true,
-        suggestedMax: Math.max(...calories, calorieGoal) + 200,
+        suggestedMax: Math.max(...values, goal) + 200,
         grid: {
           display: false, // remove horizontal grid lines
         },
@@ -122,8 +150,6 @@ const Linegraph = () => {
         data={data}
         options={{
           ...options,
-          responsive: true,
-          maintainAspectRatio: false,
         }}
       />
     </div>
