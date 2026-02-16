@@ -50,7 +50,7 @@ const Nutrition = () => {
   return (
     <Navbar>
       <div className="grid grid-flow-row grid-cols-2 gap-2">
-        <div className="bg-base-200 rounded-box mt-4 p-4 w-2xl flex flex-col gap-4">
+        <div className="bg-base-200 rounded-box mt-2 p-4 w-2xl flex flex-col gap-4">
           <Linegraph type="water"></Linegraph>
           <div className="flex flex-row justify-between">
             <Water></Water>
@@ -76,11 +76,9 @@ const Nutrition = () => {
                   Add/Edit water entry
                 </legend>
 
-                <label className="label">Water Amount</label>
-
                 <button
                   type="button"
-                  className="btn btn-soft btn-primary"
+                  className="btn btn-soft btn-primary mt-6"
                   onClick={() =>
                     document.getElementById("add_entry_modal").showModal()
                   }>
@@ -181,7 +179,7 @@ const Nutrition = () => {
                               <td
                                 colSpan={5}
                                 className="text-center p-10 text-2xl text-accent opacity-60 animate-pulse">
-                                No Meal Entries Yet
+                                No Water Entries Yet
                               </td>
                             </tr>
                           )}
@@ -197,10 +195,242 @@ const Nutrition = () => {
             </div>
           </div>
         </div>
-        <div className="bg-base-200 rounded-box mt-4 p-4 w-2xl">
-          <Linegraph></Linegraph>
+        <div className="bg-base-200 rounded-box mt-2 p-4 w-2xl">
+          <div className="flex flex-row justify-between">
+            <div className="max-w-2xs">
+              <div className="flex flex-row gap-2 items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24">
+                  <g
+                    fill="none"
+                    stroke="#fff"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2">
+                    <path d="M3 7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" />
+                    <path d="M12 7c1.956 0 3.724.802 5 2.095l-2.956 2.904a3 3 0 0 0-2.038-.799a3 3 0 0 0-2.038.798L7.012 9.095a6.98 6.98 0 0 1 5-2.095" />
+                  </g>
+                </svg>
+                <h2 className="opacity-70 text-lg">Bodyweight</h2>
+              </div>
+              <ul className="timeline timeline-vertical">
+                <li>
+                  <div className="timeline-start">1984</div>
+                  <div className="timeline-middle">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-5 w-5">
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="timeline-end timeline-box">
+                    First Macintosh computer
+                  </div>
+                  <hr />
+                </li>
+                <li>
+                  <hr />
+                  <div className="timeline-start">1998</div>
+                  <div className="timeline-middle">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-5 w-5">
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="timeline-end timeline-box">iMac</div>
+                  <hr />
+                </li>
+                <li>
+                  <hr />
+                  <div className="timeline-start">2001</div>
+                  <div className="timeline-middle">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-5 w-5">
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="timeline-end timeline-box">iPod</div>
+                  <hr />
+                </li>
+                <li>
+                  <hr />
+                  <div className="timeline-start">2007</div>
+                  <div className="timeline-middle">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-5 w-5">
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="timeline-end timeline-box">iPhone</div>
+                  <hr />
+                </li>
+                <li>
+                  <hr />
+                  <div className="timeline-start">2015</div>
+                  <div className="timeline-middle">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="h-5 w-5">
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="timeline-end timeline-box">Apple Watch</div>
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col">
+              <div>
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-54 border p-4 max-h-[29vh] overflow-auto">
+                  <legend className="fieldset-legend">
+                    Edit bodyweight goal
+                  </legend>
+
+                  <label className="label">Goal weight in KG</label>
+
+                  <input
+                    type="text"
+                    className="input"
+                    placeholder="Kilograms"
+                  />
+
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-secondary">
+                    Update Goal
+                  </button>
+                </fieldset>
+              </div>
+              <div>
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-54 border p-4 max-h-[29vh] overflow-auto">
+                  <legend className="fieldset-legend">
+                    Add/Delete bodyweight log
+                  </legend>
+
+                  <label className="label">Goal weight in KG</label>
+
+                  <button
+                    type="button"
+                    className="btn btn-soft btn-primary"
+                    onClick={() =>
+                      document.getElementById("add_bwlog_modal").showModal()
+                    }>
+                    Add Log
+                  </button>
+                  <dialog id="add_bwlog_modal" className="modal">
+                    <div className="modal-box">
+                      <h3 className="font-bold text-lg">Add Bodyweight Log</h3>
+                      <p className="py-4">
+                        Press ESC key or click outside to close
+                      </p>
+                      <div className="flex w-full items-center justify-center">
+                        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
+                          <label className="label">Bodyweight in KG</label>
+                          <input
+                            type="text"
+                            className="input w-full"
+                            placeholder="Kilograms"
+                          />
+
+                          <button
+                            type="button"
+                            className="btn btn-outline btn-primary">
+                            Log bodyweight
+                          </button>
+                        </fieldset>
+                      </div>
+                    </div>
+                    <form method="dialog" className="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+
+                  <button
+                    type="button"
+                    className="btn btn-soft "
+                    onClick={() =>
+                      document.getElementById("delete_bwlog_modal").showModal()
+                    }>
+                    Delete Log
+                  </button>
+                  <dialog id="delete_bwlog_modal" className="modal">
+                    <div className="modal-box">
+                      <h3 className="font-bold text-lg">
+                        Delete Bodyweight Log
+                      </h3>
+                      <p className="py-4">
+                        Press ESC key or click outside to close
+                      </p>
+                      <div className="flex w-full items-center justify-center">
+                        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
+                          <label className="label">
+                            Are you sure you want to delete today's bodyweight
+                            log?
+                          </label>
+
+                          <div className="flex flex-row justify-around">
+                            <button type="button" className="btn btn-primary">
+                              Confirm
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline"
+                              onClick={() =>
+                                document
+                                  .getElementById("delete_bwlog_modal")
+                                  .close()
+                              }>
+                              Cancel
+                            </button>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </div>
+                    <form method="dialog" className="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
+                </fieldset>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="bg-base-200 rounded-box mb-4 p-4 w-full col-span-2">
+        <div className="bg-base-200 rounded-box mb-2 p-4 w-full col-span-2">
           <div>
             <div className="flex gap-6">
               <div className="flex-1 overflow-auto max-h-[29vh] ">

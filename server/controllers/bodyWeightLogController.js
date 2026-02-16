@@ -148,3 +148,46 @@ export const logBodyWeight = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+//@desc Delete today's bodyweight log
+//Route DELETE /api/bodyweight/delete-log
+//@access Private
+export const deleteBodyWeightLog = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(0, 0, 0, 0);
+
+    const todayLog = await bodyWeightLogModel.findOneAndDelete({
+      user: userId,
+      loggedAt: { $gte: startOfToday, $lte: endOfToday },
+    });
+
+    if (!todayLog) {
+      return res.status(404).json({
+        success: false,
+        message: "No bodyweight log found for today",
+      });
+    }
+
+    const latestLog = await bodyWeightLogModel
+      .findOne({ user: userId })
+      .sort({ loggedAt: -1 });
+
+    const user = await userModel.findById(userId);
+
+    user.currentWeight = latestLog ? latestLog : null;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Bodyweight log deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};

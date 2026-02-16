@@ -43,6 +43,14 @@ export const bodyWeightApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Logs", "User"],
     }),
+    // Delete log body weight  (bodyweight)
+    logBodyWeight: builder.mutation({
+      query: () => ({
+        url: `${BODY_WEIGHT_URL}/delete-log`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Logs", "User"],
+    }),
   }),
 });
 
