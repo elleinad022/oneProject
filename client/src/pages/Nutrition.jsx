@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 import {
@@ -40,12 +40,46 @@ import Linegraph from "../components/Linegraph";
 import Doughnutgraph from "../components/Doughnutgraph";
 import Bargraph from "../components/Bargraph";
 import Water from "../components/Water";
+import { setCredentials } from "../slices/authSlice";
 const Nutrition = () => {
   const { data: calData, isLoading: loadingCal } = useGetTodayCaloriesQuery();
   const calorieEntries = calData?.todayLog?.entries;
   const { data: waterData, isLoading: loadingWater } =
     useGetWaterTodayLogQuery();
+  const [updateWaterGoal, { isLoading: isUpdatingWaterGoal }] =
+    useUpdateUserWaterGoalMutation();
+
+  const [newWaterGoal, setNewWaterGoal] = useState("");
   const waterEntries = waterData?.todayWaterLog?.entries;
+
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const handleUpdateWaterButton = async () => {
+    try {
+      const parsedWaterGoal = newWaterGoal !== "" ? Number(newWaterGoal) : null;
+
+      if (parsedWaterGoal !== null && parsedWaterGoal < 0) {
+        toast.error("Valid amount of water goal is required");
+        return;
+      }
+
+      await updateWaterGoal({ dailyWaterGoal: parsedWaterGoal }).unwrap();
+
+      dispatch(
+        setCredentials({
+          ...userInfo,
+          dailyWaterGoal: parsedWaterGoal,
+        }),
+      );
+
+      toast.success("Daily water goal updated successfully");
+
+      setNewWaterGoal("");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
 
   return (
     <Navbar>
@@ -60,13 +94,20 @@ const Nutrition = () => {
 
                 <label className="label">Water Amount</label>
                 <input
-                  type="text"
-                  className="input"
+                  type="number"
+                  min={0}
+                  className="input no-spinner"
+                  value={newWaterGoal}
+                  onChange={(e) => setNewWaterGoal(e.target.value)}
                   placeholder="milliliters"
                 />
 
-                <button type="button" className="btn btn-outline btn-secondary">
-                  Update Goal
+                <button
+                  type="button"
+                  className="btn btn-outline btn-secondary"
+                  disabled={isUpdatingWaterGoal}
+                  onClick={handleUpdateWaterButton}>
+                  {isUpdatingWaterGoal ? "Updating" : "Update Goal"}
                 </button>
               </fieldset>
             </div>

@@ -27,26 +27,38 @@ const Workout = () => {
   const [preferences, setPreferences] = useState("");
 
   const appliedPlan = data?.workoutPlan?.plan ?? [];
-  console.log(appliedPlan);
 
   const handleUpdateButton = async () => {
-    if (daysPerWeek && (daysPerWeek < 2 || daysPerWeek > 6)) {
-      toast.error("Workout days must be between 2 and 6");
-      return;
-    }
-
-    if (sessionDuration && (sessionDuration < 30 || sessionDuration > 120)) {
-      toast.error("Session duration must be between 30 and 120 minutes");
-      return;
-    }
     try {
+      const parsedDays = daysPerWeek !== "" ? Number(daysPerWeek) : null;
+
+      const parsedDuration =
+        sessionDuration !== "" ? Number(sessionDuration) : null;
+
+      if (parsedDays !== null && (parsedDays < 2 || parsedDays > 6)) {
+        toast.error("Workout days must be 2 to 6");
+        return;
+      }
+
+      if (
+        parsedDuration !== null &&
+        (parsedDuration < 30 || parsedDuration > 120)
+      ) {
+        toast.error("Session duration must be 30 to 120 minutes");
+        return;
+      }
+
       const payload = {
-        daysPerWeek: daysPerWeek || currentPlan.schedule.daysPerWeek,
+        daysPerWeek:
+          parsedDays !== null ? parsedDays : currentPlan.schedule.daysPerWeek,
         sessionDuration:
-          sessionDuration || currentPlan.schedule.sessionDuration,
-        fitnessLevel: fitnessLevel || currentPlan.fitnessLevel,
-        primaryGoal: primaryGoal || currentPlan.goal,
-        preferences: preferences || currentPlan.preferences,
+          parsedDuration !== null
+            ? parsedDuration
+            : currentPlan.schedule.sessionDuration,
+        fitnessLevel:
+          fitnessLevel !== "" ? fitnessLevel : currentPlan.fitnessLevel,
+        primaryGoal: primaryGoal !== "" ? primaryGoal : currentPlan.primaryGoal,
+        preferences: preferences !== "" ? preferences : currentPlan.preferences,
       };
 
       await updateWorkoutPreferences(payload).unwrap();
@@ -58,13 +70,14 @@ const Workout = () => {
         }),
       );
 
-      toast.success("Workout preferences updated successfully");
+      toast.success("Workout Preferences updated successfully");
+
       setDaysPerWeek("");
       setSessionDuration("");
       setFitnessLevel("");
       setPrimaryGoal("");
       setPreferences("");
-    } catch (error) {
+    } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
@@ -112,7 +125,7 @@ const Workout = () => {
               max={6}
               className="input w-full no-spinner"
               value={daysPerWeek}
-              onChange={(e) => setDaysPerWeek(Number(e.target.value))}
+              onChange={(e) => setDaysPerWeek(e.target.value)}
               placeholder="2 to 6 days"
             />
 
@@ -123,7 +136,7 @@ const Workout = () => {
               max={120}
               className="input w-full no-spinner"
               value={sessionDuration}
-              onChange={(e) => setSessionDuration(Number(e.target.value))}
+              onChange={(e) => setSessionDuration(e.target.value)}
               placeholder="30 to 120 minutes"
             />
 
@@ -176,14 +189,21 @@ const Workout = () => {
             </select>
             <span className="label">Optional</span>
 
-            {(isUpdating || isInitializing || isLoading) && <Loader />}
-            <button
-              disabled={isUpdating}
-              className="btn btn-primary"
-              type="button"
-              onClick={handleUpdateButton}>
-              {isUpdating ? "Updating" : "Update Preferences"}
-            </button>
+            <div className="relative inline-block">
+              <button
+                disabled={isUpdating}
+                className="btn btn-primary w-full"
+                type="button"
+                onClick={handleUpdateButton}>
+                {isUpdating ? "Updating" : "Update Preferences"}
+              </button>
+
+              {(isUpdating || isInitializing || isLoading) && (
+                <div className="absolute inset-0 flex items-center justify-center bg-base-200/60 rounded-btn">
+                  <Loader />
+                </div>
+              )}
+            </div>
           </fieldset>
           <div className="col-span-2 card w-full bg-base-100 card-xl shadow-sm">
             <div className="card-body py-0">

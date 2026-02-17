@@ -87,7 +87,6 @@ export const addCaloricGoals = async (req, res) => {
 //@desc Sets user water goals
 //Route POST /api/user/update-water-goals
 //@access private
-
 export const addWaterGoal = async (req, res) => {
   try {
     const user = await userModel.findById(req.userId);
