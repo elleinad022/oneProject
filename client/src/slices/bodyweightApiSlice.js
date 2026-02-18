@@ -13,10 +13,10 @@ export const bodyWeightApiSlice = apiSlice.injectEndpoints({
     }),
     // Set body weight goal (bodyweight)
     setBodyWeightGoal: builder.mutation({
-      query: (weightGoal) => ({
+      query: ({ weightGoal, startWeight }) => ({
         url: `${BODY_WEIGHT_URL}/set-goal`,
-        method: "POST",
-        body: { weightGoal },
+        method: "PATCH",
+        body: { weightGoal, startWeight },
       }),
       invalidatesTags: ["User"],
     }),
@@ -36,15 +36,15 @@ export const bodyWeightApiSlice = apiSlice.injectEndpoints({
     }),
     // Add log body weight  (bodyweight)
     logBodyWeight: builder.mutation({
-      query: (weightLog, loggedAt) => ({
+      query: (weightLog) => ({
         url: `${BODY_WEIGHT_URL}/log`,
         method: "POST",
-        body: { weightLog, loggedAt },
+        body: weightLog,
       }),
       invalidatesTags: ["Logs", "User"],
     }),
     // Delete log body weight  (bodyweight)
-    logBodyWeight: builder.mutation({
+    deleteBodyWeight: builder.mutation({
       query: () => ({
         url: `${BODY_WEIGHT_URL}/delete-log`,
         method: "DELETE",
@@ -60,4 +60,5 @@ export const {
   useGetBodyWeightLatestQuery,
   useGetBodyWeightHistoryQuery,
   useLogBodyWeightMutation,
+  useDeleteBodyWeightMutation,
 } = bodyWeightApiSlice;

@@ -70,15 +70,25 @@ export const setBodyWeightGoal = async (req, res) => {
     }
 
     const { weightGoal, startWeight } = req.body;
-    if (weightGoal != null && isNaN(weightGoal)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid weight goal" });
+    if (weightGoal == null && startWeight == null) {
+      return res.status(400).json({
+        success: false,
+        message: "Provide at least one value to update",
+      });
     }
+
+    if (weightGoal != null && isNaN(weightGoal)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid weight goal",
+      });
+    }
+
     if (startWeight != null && isNaN(startWeight)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid starting weight" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid starting weight",
+      });
     }
 
     //Update only fields provided by user
@@ -105,7 +115,7 @@ export const setBodyWeightGoal = async (req, res) => {
 export const logBodyWeight = async (req, res) => {
   try {
     const userId = req.userId;
-    const { weight, loggedAt } = req.body;
+    const { weight } = req.body;
 
     if (weight == null || isNaN(weight)) {
       return res.status(400).json({
@@ -134,7 +144,7 @@ export const logBodyWeight = async (req, res) => {
       todayLog = await bodyWeightLogModel.create({
         user: userId,
         weight,
-        loggedAt: loggedAt || Date.now(),
+        loggedAt: new Date(),
       });
     }
 
@@ -160,7 +170,7 @@ export const deleteBodyWeightLog = async (req, res) => {
     startOfToday.setHours(0, 0, 0, 0);
 
     const endOfToday = new Date();
-    endOfToday.setHours(0, 0, 0, 0);
+    endOfToday.setHours(23, 59, 59, 999);
 
     const todayLog = await bodyWeightLogModel.findOneAndDelete({
       user: userId,
@@ -180,7 +190,7 @@ export const deleteBodyWeightLog = async (req, res) => {
 
     const user = await userModel.findById(userId);
 
-    user.currentWeight = latestLog ? latestLog : null;
+    user.currentWeight = latestLog ? latestLog.weight : null;
     await user.save();
 
     return res.status(200).json({

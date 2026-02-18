@@ -29,6 +29,7 @@ import {
   useGetBodyWeightLatestQuery,
   useGetBodyWeightHistoryQuery,
   useLogBodyWeightMutation,
+  useDeleteBodyWeightMutation,
 } from "../slices/bodyweightApiSlice";
 
 import {
@@ -46,17 +47,29 @@ const Nutrition = () => {
   const calorieEntries = calData?.todayLog?.entries;
   const { data: waterData, isLoading: loadingWater } =
     useGetWaterTodayLogQuery();
+
   const [updateWaterGoal, { isLoading: isUpdatingWaterGoal }] =
     useUpdateUserWaterGoalMutation();
   const [addWaterEntry, { isLoading: isAddingWaterEntry }] =
     useAddWaterEntryMutation();
+  const [deleteWaterEntry, { isLoading: isDeletingWaterEntry }] =
+    useDeleteWaterEntryMutation();
   const [updateWaterEntry, { isLoading: isUpdatingWaterEntry }] =
     useUpdateWaterEntryMutation();
+  const [updateGoalAndStartingWeight, { isLoading: isUpdatingWeightGoals }] =
+    useSetBodyWeightGoalMutation();
+  const [addWeightEntry, { isLoading: isAddingWeightEntry }] =
+    useLogBodyWeightMutation();
+  const [deleteWeightEntry, { isLoading: isDeletingWeightEntry }] =
+    useDeleteBodyWeightMutation();
 
   const [newWaterGoal, setNewWaterGoal] = useState("");
   const [waterEntry, setWaterEntry] = useState("");
   const [editingWaterEntry, setEditingWaterEntry] = useState(null);
   const [editedWaterAmount, setEditedWaterAmount] = useState("");
+  const [newStartingWeight, setNewStartingWeight] = useState("");
+  const [newGoalWeight, setNewGoalWeight] = useState("");
+  const [weightEntry, setWeightEntry] = useState("");
   const waterEntries = waterData?.todayWaterLog?.entries;
 
   const dispatch = useDispatch();
@@ -91,8 +104,6 @@ const Nutrition = () => {
   const handleAddWaterEntryButton = async () => {
     try {
       const parsedWaterEntry = waterEntry !== "" ? Number(waterEntry) : null;
-      console.log("Sending waterAmount:", parsedWaterEntry);
-      console.log("Type:", typeof parsedWaterEntry);
 
       if (!parsedWaterEntry || parsedWaterEntry <= 0) {
         toast.error("Valid amount of water entry is required");
@@ -111,6 +122,15 @@ const Nutrition = () => {
   const handleWaterEntryEditButton = async (entry) => {
     setEditingWaterEntry(entry);
     setEditedWaterAmount(entry.waterAmount);
+  };
+
+  const handleDeleteWaterEntryButton = async (entry) => {
+    try {
+      await deleteWaterEntry({ entryId: entry._id }).unwrap();
+      toast.success("Water Entry deleted successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
 
   const handleSaveWaterEditButton = async () => {
@@ -135,9 +155,73 @@ const Nutrition = () => {
     }
   };
 
+  const handleUpdateWeightGoalButton = async () => {
+    try {
+      const parsedWeightGoal =
+        newGoalWeight !== "" ? Number(newGoalWeight) : null;
+      const parsedStartingWeight =
+        newStartingWeight !== "" ? Number(newStartingWeight) : null;
+
+      if (
+        (parsedWeightGoal !== null && parsedWeightGoal <= 0) ||
+        (parsedStartingWeight !== null && parsedStartingWeight <= 0)
+      ) {
+        toast.error("Valid weight goal and starting weight is required");
+        return;
+      }
+
+      await updateGoalAndStartingWeight({
+        weightGoal: parsedWeightGoal,
+        startWeight: parsedStartingWeight,
+      }).unwrap();
+
+      dispatch(
+        setCredentials({
+          ...userInfo,
+          goalWeight: parsedWeightGoal,
+          startWeight: parsedStartingWeight,
+        }),
+      );
+
+      toast.success("Weight goal and starting weight updates successfully");
+      setNewGoalWeight("");
+      setNewStartingWeight("");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleAddWeightEntryButton = async () => {
+    try {
+      const parsedWeightEntry = weightEntry !== "" ? Number(weightEntry) : null;
+
+      if (!parsedWeightEntry || parsedWeightEntry <= 0) {
+        toast.error("Valid weight entry is required");
+        return;
+      }
+
+      await addWeightEntry({ weight: parsedWeightEntry }).unwrap();
+
+      toast.success("Bodyweight entry added successfully");
+      setWeightEntry("");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleDeleteWeightEntryButton = async () => {
+    try {
+      await deleteWeightEntry().unwrap();
+      toast.success("Bodyweight log for today deleted successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
   return (
     <Navbar>
       <div className="grid grid-flow-row grid-cols-2 gap-2">
+        {/* Water section */}
         <div className="bg-base-200 rounded-box mt-2 p-4 w-2xl flex flex-col gap-4">
           <Linegraph type="water"></Linegraph>
           <div className="flex flex-row justify-between">
@@ -306,29 +390,49 @@ const Nutrition = () => {
                                       </button>
                                     </>
                                   ) : (
-                                    <button
-                                      onClick={() =>
-                                        handleWaterEntryEditButton(entry)
-                                      }
-                                      type="button"
-                                      className="btn btn-circle tooltip"
-                                      data-tip="Edit">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24">
-                                        <g
-                                          fill="none"
-                                          stroke="#fff"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2">
-                                          <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
-                                          <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
-                                        </g>
-                                      </svg>
-                                    </button>
+                                    <>
+                                      <button
+                                        onClick={() =>
+                                          handleWaterEntryEditButton(entry)
+                                        }
+                                        type="button"
+                                        className="btn btn-circle tooltip"
+                                        data-tip="Edit">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="24"
+                                          height="24"
+                                          viewBox="0 0 24 24">
+                                          <g
+                                            fill="none"
+                                            stroke="#fff"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2">
+                                            <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
+                                            <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
+                                          </g>
+                                        </svg>
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteWaterEntryButton(entry)
+                                        }
+                                        type="button"
+                                        className="btn btn-circle tooltip"
+                                        data-tip="Delete">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="32"
+                                          height="32"
+                                          viewBox="0 0 24 24">
+                                          <path
+                                            fill="#fff"
+                                            d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"
+                                          />
+                                        </svg>
+                                      </button>
+                                    </>
                                   )}
                                 </td>
                               </tr>
@@ -354,6 +458,8 @@ const Nutrition = () => {
             </div>
           </div>
         </div>
+
+        {/* Bodyweight section */}
         <div className="bg-base-200 rounded-box mt-2 p-4 w-2xl">
           <div className="flex flex-row justify-between">
             <div className="max-w-2xs">
@@ -377,7 +483,9 @@ const Nutrition = () => {
               </div>
               <ul className="timeline timeline-vertical">
                 <li>
-                  <div className="timeline-start">1984</div>
+                  <div className="timeline-start">
+                    {userInfo.startWeight} Kilograms
+                  </div>
                   <div className="timeline-middle">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -392,7 +500,7 @@ const Nutrition = () => {
                     </svg>
                   </div>
                   <div className="timeline-end timeline-box">
-                    First Macintosh computer
+                    Starting Weight
                   </div>
                   <hr />
                 </li>
@@ -455,7 +563,9 @@ const Nutrition = () => {
                 </li>
                 <li>
                   <hr />
-                  <div className="timeline-start">2015</div>
+                  <div className="timeline-start">
+                    {userInfo.goalWeight} Kilograms
+                  </div>
                   <div className="timeline-middle">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -469,39 +579,94 @@ const Nutrition = () => {
                       />
                     </svg>
                   </div>
-                  <div className="timeline-end timeline-box">Apple Watch</div>
+                  <div className="timeline-end timeline-box">Goal Weight</div>
                 </li>
               </ul>
             </div>
             <div className="flex flex-col">
               <div>
-                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-54 border p-4 max-h-[29vh] overflow-auto">
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-72 border p-4 max-h-[29vh] overflow-auto">
                   <legend className="fieldset-legend">
-                    Edit bodyweight goal
+                    Edit bodyweight goal and starting weight
                   </legend>
 
-                  <label className="label">Goal weight in KG</label>
+                  <input
+                    type="number"
+                    min={0}
+                    className="input no-spinner"
+                    value={newGoalWeight}
+                    onChange={(e) => setNewGoalWeight(e.target.value)}
+                    placeholder="Goal Weight in Kg"
+                  />
 
                   <input
-                    type="text"
-                    className="input"
-                    placeholder="Kilograms"
+                    type="number"
+                    min={0}
+                    className="input no-spinner"
+                    value={newStartingWeight}
+                    onChange={(e) => setNewStartingWeight(e.target.value)}
+                    placeholder="Starting Weight in Kg"
                   />
 
                   <button
                     type="button"
-                    className="btn btn-outline btn-secondary">
+                    className="btn btn-outline btn-secondary"
+                    onClick={() =>
+                      document
+                        .getElementById("weight_goal_confirm_modal")
+                        .showModal()
+                    }>
                     Update Goal
                   </button>
+
+                  <dialog id="weight_goal_confirm_modal" className="modal">
+                    <div className="modal-box">
+                      <h3 className="font-bold text-lg">
+                        Update Goal and Starting Weight
+                      </h3>
+                      <p className="py-4">
+                        Press ESC key or click outside to close
+                      </p>
+                      <div className="flex flex-row justify-center items-center">
+                        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
+                          <label className="label">
+                            Are you sure you want to update/reset starting and
+                            goal weight?
+                          </label>
+
+                          <div className="flex flex-row justify-around">
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={isUpdatingWeightGoals}
+                              onClick={handleUpdateWeightGoalButton}>
+                              {isUpdatingWeightGoals ? "Updating" : "Confirm"}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline"
+                              onClick={() =>
+                                document
+                                  .getElementById("weight_goal_confirm_modal")
+                                  .close()
+                              }>
+                              Cancel
+                            </button>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </div>
+                    <form method="dialog" className="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
                 </fieldset>
               </div>
               <div>
-                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-54 border p-4 max-h-[29vh] overflow-auto">
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-72 border p-4 max-h-[29vh] overflow-auto">
                   <legend className="fieldset-legend">
                     Add/Delete bodyweight log
                   </legend>
-
-                  <label className="label">Goal weight in KG</label>
 
                   <button
                     type="button"
@@ -521,15 +686,21 @@ const Nutrition = () => {
                         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
                           <label className="label">Bodyweight in KG</label>
                           <input
-                            type="text"
-                            className="input w-full"
+                            type="number"
+                            className="input w-full no-spinner"
+                            value={weightEntry}
+                            onChange={(e) => setWeightEntry(e.target.value)}
                             placeholder="Kilograms"
                           />
 
                           <button
+                            disabled={isAddingWeightEntry}
                             type="button"
-                            className="btn btn-outline btn-primary">
-                            Log bodyweight
+                            className="btn btn-outline btn-primary"
+                            onClick={handleAddWeightEntryButton}>
+                            {isAddingWeightEntry
+                              ? "Adding entry"
+                              : "Log bodyweight"}
                           </button>
                         </fieldset>
                       </div>
@@ -563,7 +734,10 @@ const Nutrition = () => {
                           </label>
 
                           <div className="flex flex-row justify-around">
-                            <button type="button" className="btn btn-primary">
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={handleDeleteWeightEntryButton}>
                               Confirm
                             </button>
                             <button
@@ -589,6 +763,8 @@ const Nutrition = () => {
             </div>
           </div>
         </div>
+
+        {/* Calories/Meals section */}
         <div className="bg-base-200 rounded-box mb-2 p-4 w-full col-span-2">
           <div>
             <div className="flex gap-6">
