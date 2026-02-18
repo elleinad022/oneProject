@@ -48,8 +48,15 @@ const Nutrition = () => {
     useGetWaterTodayLogQuery();
   const [updateWaterGoal, { isLoading: isUpdatingWaterGoal }] =
     useUpdateUserWaterGoalMutation();
+  const [addWaterEntry, { isLoading: isAddingWaterEntry }] =
+    useAddWaterEntryMutation();
+  const [updateWaterEntry, { isLoading: isUpdatingWaterEntry }] =
+    useUpdateWaterEntryMutation();
 
   const [newWaterGoal, setNewWaterGoal] = useState("");
+  const [waterEntry, setWaterEntry] = useState("");
+  const [editingWaterEntry, setEditingWaterEntry] = useState(null);
+  const [editedWaterAmount, setEditedWaterAmount] = useState("");
   const waterEntries = waterData?.todayWaterLog?.entries;
 
   const dispatch = useDispatch();
@@ -59,7 +66,7 @@ const Nutrition = () => {
     try {
       const parsedWaterGoal = newWaterGoal !== "" ? Number(newWaterGoal) : null;
 
-      if (parsedWaterGoal !== null && parsedWaterGoal < 0) {
+      if (parsedWaterGoal !== null && parsedWaterGoal <= 0) {
         toast.error("Valid amount of water goal is required");
         return;
       }
@@ -76,6 +83,53 @@ const Nutrition = () => {
       toast.success("Daily water goal updated successfully");
 
       setNewWaterGoal("");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleAddWaterEntryButton = async () => {
+    try {
+      const parsedWaterEntry = waterEntry !== "" ? Number(waterEntry) : null;
+      console.log("Sending waterAmount:", parsedWaterEntry);
+      console.log("Type:", typeof parsedWaterEntry);
+
+      if (!parsedWaterEntry || parsedWaterEntry <= 0) {
+        toast.error("Valid amount of water entry is required");
+        return;
+      }
+
+      await addWaterEntry({ waterAmount: parsedWaterEntry }).unwrap();
+
+      toast.success("Water entry added successfully");
+      setWaterEntry("");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleWaterEntryEditButton = async (entry) => {
+    setEditingWaterEntry(entry);
+    setEditedWaterAmount(entry.waterAmount);
+  };
+
+  const handleSaveWaterEditButton = async () => {
+    try {
+      const parsedAmount = Number(editedWaterAmount);
+
+      if (!parsedAmount || parsedAmount <= 0) {
+        toast.error("Valid amount of water is required");
+        return;
+      }
+
+      await updateWaterEntry({
+        entryId: editingWaterEntry._id,
+        waterAmount: parsedAmount,
+      }).unwrap();
+
+      toast.success("Water entry updated");
+
+      setEditingWaterEntry(null);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -135,15 +189,19 @@ const Nutrition = () => {
                       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
                         <label className="label">Water Amount</label>
                         <input
-                          type="text"
-                          className="input w-full"
+                          type="number"
+                          className="input w-full no-spinner"
+                          value={waterEntry}
+                          onChange={(e) => setWaterEntry(e.target.value)}
                           placeholder="milliliters"
                         />
 
                         <button
+                          disabled={isAddingWaterEntry}
                           type="button"
-                          className="btn btn-outline btn-primary">
-                          Log entry
+                          className="btn btn-outline btn-primary"
+                          onClick={handleAddWaterEntryButton}>
+                          {isAddingWaterEntry ? "Adding entry" : "Log entry"}
                         </button>
                       </fieldset>
                     </div>
@@ -180,7 +238,20 @@ const Nutrition = () => {
                           {waterEntries?.length > 0 ? (
                             waterEntries?.map((entry) => (
                               <tr key={entry._id}>
-                                <td>{entry.waterAmount} ml</td>
+                                <td>
+                                  {editingWaterEntry?._id === entry._id ? (
+                                    <input
+                                      type="number"
+                                      className="input w-48 no-spinner"
+                                      value={editedWaterAmount}
+                                      onChange={(e) =>
+                                        setEditedWaterAmount(e.target.value)
+                                      }
+                                    />
+                                  ) : (
+                                    <>{entry.waterAmount} ml</>
+                                  )}
+                                </td>
                                 <td>
                                   {new Date(entry.time).toLocaleTimeString(
                                     "en-us",
@@ -192,26 +263,73 @@ const Nutrition = () => {
                                 </td>
 
                                 <td>
-                                  <button
-                                    type="button"
-                                    className="btn btn-circle tooltip"
-                                    data-tip="Edit">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="24"
-                                      height="24"
-                                      viewBox="0 0 24 24">
-                                      <g
-                                        fill="none"
-                                        stroke="#fff"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2">
-                                        <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
-                                        <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
-                                      </g>
-                                    </svg>
-                                  </button>
+                                  {editingWaterEntry?._id === entry._id ? (
+                                    <>
+                                      <button
+                                        onClick={handleSaveWaterEditButton}
+                                        type="button"
+                                        className="btn btn-circle btn-outline btn-secondary tooltip"
+                                        data-tip="Save">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="32"
+                                          height="32"
+                                          viewBox="0 0 24 24">
+                                          <g
+                                            fill="none"
+                                            stroke="#fff"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2">
+                                            <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7" />
+                                          </g>
+                                        </svg>
+                                      </button>
+                                      <button
+                                        onClick={() =>
+                                          setEditingWaterEntry(null)
+                                        }
+                                        type="button"
+                                        className="btn btn-circle tooltip"
+                                        data-tip="Cancel">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="32"
+                                          height="32"
+                                          viewBox="0 0 48 48">
+                                          <path
+                                            fill="#d50000"
+                                            d="M24 6C14.1 6 6 14.1 6 24s8.1 18 18 18s18-8.1 18-18S33.9 6 24 6m0 4c3.1 0 6 1.1 8.4 2.8L12.8 32.4C11.1 30 10 27.1 10 24c0-7.7 6.3-14 14-14m0 28c-3.1 0-6-1.1-8.4-2.8l19.6-19.6C36.9 18 38 20.9 38 24c0 7.7-6.3 14-14 14"
+                                          />
+                                        </svg>
+                                      </button>
+                                    </>
+                                  ) : (
+                                    <button
+                                      onClick={() =>
+                                        handleWaterEntryEditButton(entry)
+                                      }
+                                      type="button"
+                                      className="btn btn-circle tooltip"
+                                      data-tip="Edit">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24">
+                                        <g
+                                          fill="none"
+                                          stroke="#fff"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2">
+                                          <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
+                                          <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
+                                        </g>
+                                      </svg>
+                                    </button>
+                                  )}
                                 </td>
                               </tr>
                             ))

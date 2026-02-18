@@ -16,7 +16,7 @@ export const waterApiSlice = apiSlice.injectEndpoints({
       query: (waterAmount) => ({
         url: `${WATER_URL}/add-water`,
         method: "POST",
-        body: { waterAmount },
+        body: waterAmount,
       }),
       invalidatesTags: ["Logs"],
     }),
