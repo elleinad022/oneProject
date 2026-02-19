@@ -7,15 +7,39 @@ import userModel from "../models/userModel.js";
 export const getBodyWeightHistory = async (req, res) => {
   try {
     const userId = req.userId;
-    const bodyWeightLogs = await bodyWeightLogModel
-      .find({ user: userId })
-      .sort({
-        loggedAt: -1,
-      });
 
-    return res.status(200).json({ success: true, bodyWeightLogs });
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const query = {
+      user: userId,
+      ...(user.weightGoalStartedAt && {
+        loggedAt: { $gte: user.weightGoalStartedAt },
+      }),
+    };
+
+    const bodyWeightLogs = await bodyWeightLogModel
+      .find(query)
+      .sort({ loggedAt: -1 })
+      .limit(3);
+
+    const latestThreeAscending = bodyWeightLogs.reverse();
+
+    return res.status(200).json({
+      success: true,
+      bodyWeightLogs: latestThreeAscending,
+    });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
@@ -69,15 +93,16 @@ export const setBodyWeightGoal = async (req, res) => {
       });
     }
 
-    const { weightGoal, startWeight } = req.body;
-    if (weightGoal == null && startWeight == null) {
+    const { goalWeight, startWeight } = req.body;
+
+    if (goalWeight == null && startWeight == null) {
       return res.status(400).json({
         success: false,
         message: "Provide at least one value to update",
       });
     }
 
-    if (weightGoal != null && isNaN(weightGoal)) {
+    if (goalWeight != null && isNaN(goalWeight)) {
       return res.status(400).json({
         success: false,
         message: "Invalid weight goal",
@@ -91,16 +116,29 @@ export const setBodyWeightGoal = async (req, res) => {
       });
     }
 
-    //Update only fields provided by user
-    if (weightGoal != null) user.weightGoal = weightGoal;
-    if (startWeight != null) user.startWeight = startWeight;
+    let goalChanged = false;
+
+    if (goalWeight != null && goalWeight !== user.goalWeight) {
+      user.goalWeight = goalWeight;
+      goalChanged = true;
+    }
+
+    if (startWeight != null && startWeight !== user.startWeight) {
+      user.startWeight = startWeight;
+      goalChanged = true;
+    }
+
+    if (goalChanged) {
+      user.weightGoalStartedAt = new Date();
+    }
+
     await user.save();
 
     return res.status(201).json({
       success: true,
       message: "Body weight goal updated successfully",
       user: {
-        weightGoal: user.weightGoal,
+        goalWeight: user.goalWeight,
         startWeight: user.startWeight,
       },
     });

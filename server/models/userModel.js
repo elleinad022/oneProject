@@ -55,6 +55,11 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
 
+  weightGoalStartedAt: {
+    type: Date,
+    default: null,
+  },
+
   workoutTrackingIndex: {
     type: Number,
     min: 0,

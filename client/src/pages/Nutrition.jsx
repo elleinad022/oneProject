@@ -47,6 +47,8 @@ const Nutrition = () => {
   const calorieEntries = calData?.todayLog?.entries;
   const { data: waterData, isLoading: loadingWater } =
     useGetWaterTodayLogQuery();
+  const { data: bodyweightData, isLoading: loadingBodyweight } =
+    useGetBodyWeightHistoryQuery();
 
   const [updateWaterGoal, { isLoading: isUpdatingWaterGoal }] =
     useUpdateUserWaterGoalMutation();
@@ -62,6 +64,8 @@ const Nutrition = () => {
     useLogBodyWeightMutation();
   const [deleteWeightEntry, { isLoading: isDeletingWeightEntry }] =
     useDeleteBodyWeightMutation();
+  const [addMealEntry, { isLoading: isAddingMealEntry }] =
+    useAddMealEntryMutation();
 
   const [newWaterGoal, setNewWaterGoal] = useState("");
   const [waterEntry, setWaterEntry] = useState("");
@@ -70,7 +74,14 @@ const Nutrition = () => {
   const [newStartingWeight, setNewStartingWeight] = useState("");
   const [newGoalWeight, setNewGoalWeight] = useState("");
   const [weightEntry, setWeightEntry] = useState("");
+  const [mealEntryDescription, setMealEntryDescription] = useState("");
+  const [mealEntryCalories, setMealEntryCalories] = useState("");
+  const [mealEntryProtein, setMealEntryProtein] = useState("");
+  const [mealEntryCarbs, setMealEntryCarbs] = useState("");
+  const [mealEntryFats, setMealEntryFats] = useState("");
+
   const waterEntries = waterData?.todayWaterLog?.entries;
+  const bodyweightEntries = bodyweightData?.bodyWeightLogs;
 
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
@@ -171,7 +182,7 @@ const Nutrition = () => {
       }
 
       await updateGoalAndStartingWeight({
-        weightGoal: parsedWeightGoal,
+        goalWeight: parsedWeightGoal,
         startWeight: parsedStartingWeight,
       }).unwrap();
 
@@ -202,7 +213,7 @@ const Nutrition = () => {
 
       await addWeightEntry({ weight: parsedWeightEntry }).unwrap();
 
-      toast.success("Bodyweight entry added successfully");
+      toast.success("Bodyweight entry for today added successfully");
       setWeightEntry("");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
@@ -213,6 +224,55 @@ const Nutrition = () => {
     try {
       await deleteWeightEntry().unwrap();
       toast.success("Bodyweight log for today deleted successfully");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleAddMealEntryButton = async () => {
+    try {
+      const parsedMealEntryDescription =
+        mealEntryDescription !== "" ? String(mealEntryDescription) : null;
+      const parsedMealEntryCalories =
+        mealEntryCalories !== "" ? Number(mealEntryCalories) : null;
+      const parsedMealEntryProtein =
+        mealEntryProtein !== "" ? Number(mealEntryProtein) : null;
+      const parsedMealEntryCarbs =
+        mealEntryCarbs !== "" ? Number(mealEntryCarbs) : null;
+      const parsedMealEntryFats =
+        mealEntryFats !== "" ? Number(mealEntryFats) : null;
+
+      if (
+        [
+          parsedMealEntryCalories,
+          parsedMealEntryProtein,
+          parsedMealEntryCarbs,
+          parsedMealEntryFats,
+        ].some((e) => !e || e <= 0)
+      ) {
+        toast.error("Valid meal details are required");
+        return;
+      }
+
+      if (!parsedMealEntryDescription) {
+        toast.error("Meal description is required");
+        return;
+      }
+
+      await addMealEntry({
+        description: parsedMealEntryDescription,
+        calories: parsedMealEntryCalories,
+        protein: parsedMealEntryProtein,
+        carbs: parsedMealEntryCarbs,
+        fats: parsedMealEntryFats,
+      }).unwrap();
+
+      toast.success("Meal entry added successfully");
+      setMealEntryDescription("");
+      setMealEntryCalories("");
+      setMealEntryProtein("");
+      setMealEntryCarbs("");
+      setMealEntryFats("");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -350,6 +410,7 @@ const Nutrition = () => {
                                   {editingWaterEntry?._id === entry._id ? (
                                     <>
                                       <button
+                                        disabled={isUpdatingWaterEntry}
                                         onClick={handleSaveWaterEditButton}
                                         type="button"
                                         className="btn btn-circle btn-outline btn-secondary tooltip"
@@ -415,6 +476,7 @@ const Nutrition = () => {
                                         </svg>
                                       </button>
                                       <button
+                                        disabled={isDeletingWaterEntry}
                                         onClick={() =>
                                           handleDeleteWaterEntryButton(entry)
                                         }
@@ -504,63 +566,32 @@ const Nutrition = () => {
                   </div>
                   <hr />
                 </li>
-                <li>
-                  <hr />
-                  <div className="timeline-start">1998</div>
-                  <div className="timeline-middle">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="h-5 w-5">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="timeline-end timeline-box">iMac</div>
-                  <hr />
-                </li>
-                <li>
-                  <hr />
-                  <div className="timeline-start">2001</div>
-                  <div className="timeline-middle">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="h-5 w-5">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="timeline-end timeline-box">iPod</div>
-                  <hr />
-                </li>
-                <li>
-                  <hr />
-                  <div className="timeline-start">2007</div>
-                  <div className="timeline-middle">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="h-5 w-5">
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="timeline-end timeline-box">iPhone</div>
-                  <hr />
-                </li>
+                {bodyweightEntries?.map((log) => (
+                  <li>
+                    <hr />
+                    <div className="timeline-start">{log.weight} Kilograms</div>
+                    <div className="timeline-middle">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="h-5 w-5">
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <div className="timeline-end timeline-box">
+                      {new Date(log.loggedAt).toLocaleDateString("en-us", {
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </div>
+                    <hr />
+                  </li>
+                ))}
                 <li>
                   <hr />
                   <div className="timeline-start">
@@ -684,7 +715,9 @@ const Nutrition = () => {
                       </p>
                       <div className="flex w-full items-center justify-center">
                         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
-                          <label className="label">Bodyweight in KG</label>
+                          <label className="label">
+                            One (1) bodyweight log can exist per day
+                          </label>
                           <input
                             type="number"
                             className="input w-full no-spinner"
@@ -735,10 +768,11 @@ const Nutrition = () => {
 
                           <div className="flex flex-row justify-around">
                             <button
+                              disabled={isDeletingWeightEntry}
                               type="button"
                               className="btn btn-primary"
                               onClick={handleDeleteWeightEntryButton}>
-                              Confirm
+                              {isDeletingWeightEntry ? "Deleting" : "Confirm"}
                             </button>
                             <button
                               type="button"
@@ -830,22 +864,51 @@ const Nutrition = () => {
                 <legend className="fieldset-legend">Add meal entry</legend>
 
                 <label className="label">Description</label>
-                <input type="text" className="input" />
+                <input
+                  type="text"
+                  className="input"
+                  value={mealEntryDescription}
+                  onChange={(e) => setMealEntryDescription(e.target.value)}
+                />
 
                 <label className="label">Calories</label>
-                <input type="text" className="input" />
+                <input
+                  type="number"
+                  className="input no-spinner"
+                  value={mealEntryCalories}
+                  onChange={(e) => setMealEntryCalories(e.target.value)}
+                />
 
                 <label className="label">Protein</label>
-                <input type="text" className="input" />
+                <input
+                  type="number"
+                  className="input no-spinner"
+                  value={mealEntryProtein}
+                  onChange={(e) => setMealEntryProtein(e.target.value)}
+                />
 
                 <label className="label">Carbs</label>
-                <input type="text" className="input" />
+                <input
+                  type="number"
+                  className="input no-spinner"
+                  value={mealEntryCarbs}
+                  onChange={(e) => setMealEntryCarbs(e.target.value)}
+                />
 
                 <label className="label">Fats</label>
-                <input type="text" className="input" />
+                <input
+                  type="number"
+                  className="input no-spinner"
+                  value={mealEntryFats}
+                  onChange={(e) => setMealEntryFats(e.target.value)}
+                />
 
-                <button type="button" className="btn btn-soft btn-primary">
-                  Add entry
+                <button
+                  type="button"
+                  className="btn btn-soft btn-primary"
+                  disabled={isAddingMealEntry}
+                  onClick={handleAddMealEntryButton}>
+                  {isAddingMealEntry ? "Adding Entry" : "Add entry"}
                 </button>
               </fieldset>
             </div>

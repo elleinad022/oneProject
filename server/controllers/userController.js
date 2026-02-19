@@ -8,7 +8,7 @@ export const getUserData = async (req, res) => {
     const user = await userModel
       .findById(req.userId)
       .select(
-        "_id email name isVerified verifyOtpExpireAt resetOtpExpireAt otpCooldown dailyCalorieGoal macros dailyWaterGoal startWeight currentWeight goalWeight workoutTrackingIndex workoutWeekIndex",
+        "_id email name isVerified verifyOtpExpireAt resetOtpExpireAt otpCooldown dailyCalorieGoal macros dailyWaterGoal startWeight currentWeight goalWeight weightGoalStartedAt workoutTrackingIndex workoutWeekIndex",
       );
 
     if (!user) {
@@ -33,6 +33,7 @@ export const getUserData = async (req, res) => {
         startWeight: user.startWeight,
         currentWeight: user.currentWeight,
         goalWeight: user.goalWeight,
+        weightGoalsStartedAt: user.weightGoalsStartedAt,
         workoutTrackingIndex: user.workoutTrackingIndex,
         workoutWeekIndex: user.workoutWeekIndex,
       },

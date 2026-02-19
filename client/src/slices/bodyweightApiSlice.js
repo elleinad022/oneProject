@@ -9,14 +9,14 @@ export const bodyWeightApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${BODY_WEIGHT_URL}/goal`,
       }),
-      providesTags: ["User"],
+      providesTags: ["Logs", "User"],
     }),
     // Set body weight goal (bodyweight)
     setBodyWeightGoal: builder.mutation({
-      query: ({ weightGoal, startWeight }) => ({
+      query: ({ goalWeight, startWeight }) => ({
         url: `${BODY_WEIGHT_URL}/set-goal`,
         method: "PATCH",
-        body: { weightGoal, startWeight },
+        body: { goalWeight, startWeight },
       }),
       invalidatesTags: ["User"],
     }),
@@ -25,14 +25,14 @@ export const bodyWeightApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `${BODY_WEIGHT_URL}/latest`,
       }),
-      providesTags: ["User"],
+      providesTags: ["Logs", "User"],
     }),
     // Get body weight log history (bodyweight)
     getBodyWeightHistory: builder.query({
       query: () => ({
         url: `${BODY_WEIGHT_URL}/history`,
       }),
-      providesTags: ["User"],
+      providesTags: ["Logs", "User"],
     }),
     // Add log body weight  (bodyweight)
     logBodyWeight: builder.mutation({
