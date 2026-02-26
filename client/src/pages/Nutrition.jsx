@@ -66,11 +66,31 @@ const Nutrition = () => {
     useDeleteBodyWeightMutation();
   const [addMealEntry, { isLoading: isAddingMealEntry }] =
     useAddMealEntryMutation();
+  const [deleteMealEntry, { isLoading: isDeletingMealEntry }] =
+    useDeleteMealEntryMutation();
+  const [updateMealEntry, { isLoading: isUpdatingMealEntry }] =
+    useUpdateMealEntryMutation();
+  const [updateCalorieGoals, { isLoading: isUpdatingCalorieGoals }] =
+    useUpdateUserCalorieGoalMutation();
 
   const [newWaterGoal, setNewWaterGoal] = useState("");
   const [waterEntry, setWaterEntry] = useState("");
   const [editingWaterEntry, setEditingWaterEntry] = useState(null);
   const [editedWaterAmount, setEditedWaterAmount] = useState("");
+  const [editingMealEntry, setEditingMealEntry] = useState(null);
+  const [editedMealDetails, setEditedMealDetails] = useState({
+    description: "",
+    calories: "",
+    protein: "",
+    carbs: "",
+    fats: "",
+  });
+  const [editedCalorieGoals, setEditedCalorieGoals] = useState({
+    caloriesGoal: "",
+    proteinGoal: "",
+    carbsGoal: "",
+    fatsGoal: "",
+  });
   const [newStartingWeight, setNewStartingWeight] = useState("");
   const [newGoalWeight, setNewGoalWeight] = useState("");
   const [weightEntry, setWeightEntry] = useState("");
@@ -273,6 +293,135 @@ const Nutrition = () => {
       setMealEntryProtein("");
       setMealEntryCarbs("");
       setMealEntryFats("");
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleDeleteMealEntryButton = async (entry) => {
+    await deleteMealEntry({ entryId: entry._id }).unwrap();
+    toast.success("Meal Entry deleted successfully");
+    try {
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleMealEntryEditButton = (entry) => {
+    setEditingMealEntry(entry);
+    setEditedMealDetails({
+      description: entry.description,
+      calories: entry.calories,
+      protein: entry.protein,
+      carbs: entry.carbs,
+      fats: entry.fats,
+    });
+  };
+
+  const handleEditedMealChange = (e) => {
+    const { name, value } = e.target;
+
+    setEditedMealDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveMealEditButton = async () => {
+    try {
+      const parsedCalories = Number(editedMealDetails.calories);
+      const parsedProtein = Number(editedMealDetails.protein);
+      const parsedCarbs = Number(editedMealDetails.carbs);
+      const parsedFats = Number(editedMealDetails.fats);
+
+      if (
+        [parsedCalories, parsedProtein, parsedCarbs, parsedFats].some(
+          (e) => isNaN(e) || e < 0,
+        )
+      ) {
+        toast.error("Valid meal details are required");
+        return;
+      }
+
+      await updateMealEntry({
+        entryId: editingMealEntry._id,
+        description: editedMealDetails.description,
+        calories: parsedCalories,
+        protein: parsedProtein,
+        carbs: parsedCarbs,
+        fats: parsedFats,
+      }).unwrap();
+
+      toast.success("Meal entry updated");
+
+      setEditingMealEntry(null);
+      setEditedMealDetails({
+        description: "",
+        calories: "",
+        protein: "",
+        carbs: "",
+        fats: "",
+      });
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleEditedCalorieGoalsChange = (e) => {
+    const { name, value } = e.target;
+
+    setEditedCalorieGoals((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveGoalButton = async () => {
+    try {
+      const { caloriesGoal, proteinGoal, carbsGoal, fatsGoal } =
+        editedCalorieGoals;
+
+      if (!caloriesGoal || !proteinGoal || !carbsGoal || !fatsGoal) {
+        toast.error("All goal inputs are required");
+        return;
+      }
+
+      const parsedCalories = Number(caloriesGoal);
+      const parsedProtein = Number(proteinGoal);
+      const parsedCarbs = Number(carbsGoal);
+      const parsedFats = Number(fatsGoal);
+
+      if (
+        [parsedCalories, parsedProtein, parsedCarbs, parsedFats].some(
+          (e) => isNaN(e) || e < 0,
+        )
+      ) {
+        toast.error("All values must be valid positive numbers");
+        return;
+      }
+
+      const response = await updateCalorieGoals({
+        dailyCalorieGoal: parsedCalories,
+        protein: parsedProtein,
+        carbohydrates: parsedCarbs,
+        fats: parsedFats,
+      }).unwrap();
+
+      dispatch(
+        setCredentials({
+          ...userInfo,
+          ...response.userData,
+        }),
+      );
+
+      toast.success("User caloric goals successfully updated");
+
+      setEditedCalorieGoals({
+        caloriesGoal: "",
+        proteinGoal: "",
+        carbsGoal: "",
+        fatsGoal: "",
+      });
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -818,32 +967,155 @@ const Nutrition = () => {
                     {calorieEntries?.length > 0 ? (
                       calorieEntries?.map((entry) => (
                         <tr key={entry._id}>
-                          <td>{entry.description}</td>
-                          <td>{entry.calories}</td>
-                          <td>{entry.protein}</td>
-                          <td>{entry.carbs}</td>
-                          <td>{entry.fats}</td>
                           <td>
-                            <button
-                              type="button"
-                              className="btn btn-circle tooltip"
-                              data-tip="Edit">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24">
-                                <g
-                                  fill="none"
-                                  stroke="#fff"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2">
-                                  <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
-                                  <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
-                                </g>
-                              </svg>
-                            </button>
+                            {editingMealEntry?._id === entry._id ? (
+                              <input
+                                name="description"
+                                value={editedMealDetails.description}
+                                onChange={handleEditedMealChange}
+                                className="input w-40"
+                              />
+                            ) : (
+                              entry.description
+                            )}
+                          </td>
+                          <td>
+                            {editingMealEntry?._id === entry._id ? (
+                              <input
+                                name="calories"
+                                value={editedMealDetails.calories}
+                                onChange={handleEditedMealChange}
+                                className="input w-15"
+                              />
+                            ) : (
+                              entry.calories
+                            )}
+                          </td>
+                          <td>
+                            {editingMealEntry?._id === entry._id ? (
+                              <input
+                                name="protein"
+                                value={editedMealDetails.protein}
+                                onChange={handleEditedMealChange}
+                                className="input w-15"
+                              />
+                            ) : (
+                              entry.protein
+                            )}
+                          </td>
+                          <td>
+                            {editingMealEntry?._id === entry._id ? (
+                              <input
+                                name="carbs"
+                                value={editedMealDetails.carbs}
+                                onChange={handleEditedMealChange}
+                                className="input w-15"
+                              />
+                            ) : (
+                              entry.carbs
+                            )}
+                          </td>
+                          <td>
+                            {editingMealEntry?._id === entry._id ? (
+                              <input
+                                name="fats"
+                                value={editedMealDetails.fats}
+                                onChange={handleEditedMealChange}
+                                className="input w-15"
+                              />
+                            ) : (
+                              entry.fats
+                            )}
+                          </td>
+                          <td>
+                            {editingMealEntry?._id === entry._id ? (
+                              <div>
+                                <button
+                                  disabled={isUpdatingMealEntry}
+                                  onClick={() => handleSaveMealEditButton()}
+                                  type="button"
+                                  className="btn btn-circle tooltip"
+                                  data-tip="Save">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="32"
+                                    height="32"
+                                    viewBox="0 0 24 24">
+                                    <g
+                                      fill="none"
+                                      stroke="#fff"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2">
+                                      <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                      <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7M7 3v4a1 1 0 0 0 1 1h7" />
+                                    </g>
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={() => setEditingMealEntry(null)}
+                                  type="button"
+                                  className="btn btn-circle tooltip"
+                                  data-tip="Cancel">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="32"
+                                    height="32"
+                                    viewBox="0 0 48 48">
+                                    <path
+                                      fill="#d50000"
+                                      d="M24 6C14.1 6 6 14.1 6 24s8.1 18 18 18s18-8.1 18-18S33.9 6 24 6m0 4c3.1 0 6 1.1 8.4 2.8L12.8 32.4C11.1 30 10 27.1 10 24c0-7.7 6.3-14 14-14m0 28c-3.1 0-6-1.1-8.4-2.8l19.6-19.6C36.9 18 38 20.9 38 24c0 7.7-6.3 14-14 14"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            ) : (
+                              <div>
+                                <button
+                                  disabled={isUpdatingMealEntry}
+                                  onClick={() =>
+                                    handleMealEntryEditButton(entry)
+                                  }
+                                  type="button"
+                                  className="btn btn-circle tooltip"
+                                  data-tip="Edit">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24">
+                                    <g
+                                      fill="none"
+                                      stroke="#fff"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2">
+                                      <path d="M7 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-1" />
+                                      <path d="M20.385 6.585a2.1 2.1 0 0 0-2.97-2.97L9 12v3h3zM16 5l3 3" />
+                                    </g>
+                                  </svg>
+                                </button>
+                                <button
+                                  disabled={isDeletingMealEntry}
+                                  onClick={() =>
+                                    handleDeleteMealEntryButton(entry)
+                                  }
+                                  type="button"
+                                  className="btn btn-circle tooltip"
+                                  data-tip="Delete">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="32"
+                                    height="32"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                      fill="#fff"
+                                      d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       ))
@@ -921,21 +1193,50 @@ const Nutrition = () => {
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
                 <label className="input">
                   <span className="label">Calories</span>
-                  <input type="text" placeholder="Total" />
+                  <input
+                    name="caloriesGoal"
+                    value={editedCalorieGoals.caloriesGoal}
+                    onChange={handleEditedCalorieGoalsChange}
+                    type="number"
+                    placeholder="Total"
+                    className="no-spinner"
+                  />
                 </label>
                 <label className="input">
                   <span className="label">Protein</span>
-                  <input type="text" placeholder="grams" />
+                  <input
+                    name="proteinGoal"
+                    value={editedCalorieGoals.proteinGoal}
+                    onChange={handleEditedCalorieGoalsChange}
+                    type="number"
+                    placeholder="grams"
+                    className="no-spinner"
+                  />
                 </label>
                 <label className="input">
                   <span className="label">Carbs</span>
-                  <input type="text" placeholder="grams" />
+                  <input
+                    name="carbsGoal"
+                    value={editedCalorieGoals.carbsGoal}
+                    onChange={handleEditedCalorieGoalsChange}
+                    type="number"
+                    placeholder="grams"
+                    className="no-spinner"
+                  />
                 </label>
                 <label className="input">
                   <span className="label">Fats</span>
-                  <input type="text" placeholder="grams" />
+                  <input
+                    name="fatsGoal"
+                    value={editedCalorieGoals.fatsGoal}
+                    onChange={handleEditedCalorieGoalsChange}
+                    type="number"
+                    placeholder="grams"
+                    className="no-spinner"
+                  />
                 </label>
                 <button
+                  onClick={handleSaveGoalButton}
                   type="button"
                   className="col-span-2 btn btn-outline btn-secondary">
                   Update Goal Macros

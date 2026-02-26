@@ -158,7 +158,7 @@ export const updateMealEntry = async (req, res) => {
     if (
       !description ||
       [calories, protein, carbs, fats].some(
-        (macro) => macro == null || isNaN(macro)
+        (macro) => macro == null || isNaN(macro),
       )
     ) {
       return res.status(400).json({
@@ -291,7 +291,7 @@ export const getWeeklyLogs = async (req, res) => {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       const log = logs.find(
-        (entry) => entry.date.toDateString() === date.toDateString()
+        (entry) => entry.date.toDateString() === date.toDateString(),
       );
       chartData.unshift({
         date: date.toDateString(),

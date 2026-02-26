@@ -44,7 +44,7 @@ export const caloriesApiSlice = apiSlice.injectEndpoints({
     }),
     // Update meal entry route (calories)
     updateMealEntry: builder.mutation({
-      query: ({ entryId, meal }) => ({
+      query: ({ entryId, ...meal }) => ({
         url: `${CAL_URL}/update-meal/${entryId}`,
         method: "PUT",
         body: meal,
