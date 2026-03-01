@@ -54,9 +54,38 @@ const FeaturedMeals = () => {
         </div>
       </div>
       <dialog id="meal_modal_1" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello Meal Modal 1!</h3>
-          <p className="py-4">Press ESC key or click outside to close</p>
+        <div className="modal-box w-11/12 max-w-5xl max-h-6/12 glass shadow-2xl">
+          <div className="grid grid-cols-2 gap-4 ">
+            <div>
+              <h2 className="font-semibold text-xl text-primary text-left  leading-tight line-clamp-2 truncate">
+                {meals?.[0]?.title}
+              </h2>
+              <p className="py-4 text-sm">
+                Press ESC key or click outside to close
+              </p>
+              <p className="text-md text-zinc-100 text-left">
+                Ready In : {meals?.[0]?.readyInMinutes} Minutes <br /> Calories:{" "}
+                {meals?.[0]?.nutrition?.calories} <br /> Protein:{" "}
+                {meals?.[0]?.nutrition?.protein} <br /> Carbohydrates:{" "}
+                {meals?.[0]?.nutrition?.carbs} <br /> Fats:{" "}
+                {meals?.[0]?.nutrition?.fat}
+              </p>
+            </div>
+            <div className="h-64">
+              <img
+                src={meals?.[0]?.image}
+                className="w-full h-full object-scale-down "
+              />
+            </div>
+            <div className="col-span-2">
+              <h3 className="text-lg font-bold text-secondary">
+                Instructions:
+              </h3>
+              {meals?.[0]?.analyzedInstructions?.[0]?.steps?.map((step) => (
+                <li key={step.number}>{step.step}</li>
+              ))}
+            </div>
+          </div>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
@@ -101,9 +130,38 @@ const FeaturedMeals = () => {
         </div>
       </div>
       <dialog id="meal_modal_2" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello Meal Modal 2!</h3>
-          <p className="py-4">Press ESC key or click outside to close</p>
+        <div className="modal-box w-11/12 max-w-5xl max-h-6/12 glass shadow-2xl">
+          <div className="grid grid-cols-2 gap-4 ">
+            <div>
+              <h2 className="font-semibold text-xl text-primary text-left  leading-tight line-clamp-2 truncate">
+                {meals?.[1]?.title}
+              </h2>
+              <p className="py-4 text-sm">
+                Press ESC key or click outside to close
+              </p>
+              <p className="text-md text-zinc-100 text-left">
+                Ready In : {meals?.[1]?.readyInMinutes} Minutes <br /> Calories:{" "}
+                {meals?.[1]?.nutrition?.calories} <br /> Protein:{" "}
+                {meals?.[1]?.nutrition?.protein} <br /> Carbohydrates:{" "}
+                {meals?.[1]?.nutrition?.carbs} <br /> Fats:{" "}
+                {meals?.[1]?.nutrition?.fat}
+              </p>
+            </div>
+            <div className="h-64">
+              <img
+                src={meals?.[1]?.image}
+                className="w-full h-full object-scale-down "
+              />
+            </div>
+            <div className="col-span-2">
+              <h3 className="text-lg font-bold text-secondary">
+                Instructions:
+              </h3>
+              {meals?.[1]?.analyzedInstructions?.[0]?.steps?.map((step) => (
+                <li key={step.number}>{step.step}</li>
+              ))}
+            </div>
+          </div>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
@@ -148,9 +206,38 @@ const FeaturedMeals = () => {
         </div>
       </div>
       <dialog id="meal_modal_3" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello Meal Modal 3!</h3>
-          <p className="py-4">Press ESC key or click outside to close</p>
+        <div className="modal-box w-11/12 max-w-5xl max-h-6/12 glass shadow-2xl">
+          <div className="grid grid-cols-2 gap-4 ">
+            <div>
+              <h2 className="font-semibold text-xl text-primary text-left  leading-tight line-clamp-2 truncate">
+                {meals?.[2]?.title}
+              </h2>
+              <p className="py-4 text-sm">
+                Press ESC key or click outside to close
+              </p>
+              <p className="text-md text-zinc-100 text-left">
+                Ready In : {meals?.[2]?.readyInMinutes} Minutes <br /> Calories:{" "}
+                {meals?.[2]?.nutrition?.calories} <br /> Protein:{" "}
+                {meals?.[2]?.nutrition?.protein} <br /> Carbohydrates:{" "}
+                {meals?.[2]?.nutrition?.carbs} <br /> Fats:{" "}
+                {meals?.[2]?.nutrition?.fat}
+              </p>
+            </div>
+            <div className="h-64">
+              <img
+                src={meals?.[2]?.image}
+                className="w-full h-full object-scale-down "
+              />
+            </div>
+            <div className="col-span-2">
+              <h3 className="text-lg font-bold text-secondary">
+                Instructions:
+              </h3>
+              {meals?.[2]?.analyzedInstructions?.[0]?.steps?.map((step) => (
+                <li key={step.number}>{step.step}</li>
+              ))}
+            </div>
+          </div>
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
