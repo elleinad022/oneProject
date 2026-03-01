@@ -95,33 +95,7 @@ const Navbar = ({ children }) => {
                 Nutrition
               </Link>
             </li>
-            <li>
-              <Link to="/menu" className="py-5">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={32}
-                  height={32}
-                  viewBox="0 0 14 14">
-                  <g
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinejoin="round"
-                    strokeWidth={1}>
-                    <path d="M7.014 13.301c-5.474 0-7.203-1.702-6.206-4.78H13.22c.997 3.078-.732 4.78-6.206 4.78Z"></path>
-                    <path
-                      strokeLinecap="round"
-                      d="M4.23 4.279C5.335 5.704 5.726 7.14 5.883 8.494"></path>
-                    <path
-                      strokeLinecap="round"
-                      d="M1.368 8.515c-.6-1.275-.41-2.746.423-3.473a3.7 3.7 0 0 1-.34-.578c-.698-1.482-.295-3.14.9-3.704C3.549.196 5.085.94 5.783 2.422q.146.313.23.63c.992-.163 2.092.426 2.735 1.493l.187.363"></path>
-                    <path
-                      strokeLinecap="round"
-                      d="M7.661 8.389h5.252q.123-.444.124-.988c0-1.76-.99-2.75-2.75-2.75s-2.75.99-2.75 2.75q0 .544.124.988"></path>
-                  </g>
-                </svg>
-                Menu
-              </Link>
-            </li>
+
             <li>
               <Link to="/records" className="py-5">
                 <svg

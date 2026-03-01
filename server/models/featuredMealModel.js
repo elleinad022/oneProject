@@ -7,6 +7,9 @@ const featuredMealSchema = new mongoose.Schema({
   readyInMinutes: { type: Number },
   servings: { type: Number },
   sourceUrl: { type: String },
+  instructions: { type: String },
+  analyzedInstructions: [{ type: mongoose.Schema.Types.Mixed }],
+  extendedIngredients: [{ type: mongoose.Schema.Types.Mixed }],
   nutrition: {
     calories: { type: Number },
     protein: { type: Number },
