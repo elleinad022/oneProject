@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createProgressTracker,
+  deleteProgressTracker,
   addProgressEntry,
   getTrackers,
   updateProgressEntry,
@@ -12,6 +13,11 @@ import userAuth from "../middleware/userAuth.js";
 const personalRecordRouter = express.Router();
 
 personalRecordRouter.post("/create-tracker", userAuth, createProgressTracker);
+personalRecordRouter.delete(
+  "/delete-tracker/:trackerId",
+  userAuth,
+  deleteProgressTracker,
+);
 personalRecordRouter.post("/add-entry/:trackerId", userAuth, addProgressEntry);
 personalRecordRouter.get("/all-trackers", userAuth, getTrackers);
 personalRecordRouter.put(

@@ -43,6 +43,48 @@ export const createProgressTracker = async (req, res) => {
   }
 };
 
+//@desc Delete progress tracker
+//Route DELETE api/progress/delete-tracker/:trackerId
+//@access Private
+export const deleteProgressTracker = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { trackerId } = req.params;
+
+    if (!userId) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    if (!trackerId) {
+      return res.status(404).json({
+        success: false,
+        message: "Tracker not found",
+      });
+    }
+
+    const tracker = await progressTrackerModel.findOneAndDelete({
+      _id: trackerId,
+      user: userId,
+    });
+
+    if (!tracker) {
+      return res.status(404).json({
+        success: false,
+        message: "Tracker not found or already deleted",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Tracker deleted successfully.",
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 //@desc Add tracker entry
 //Route POST api/progress/add-entry/:trackerId
 //@access Private

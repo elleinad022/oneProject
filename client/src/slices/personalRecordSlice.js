@@ -13,6 +13,14 @@ export const personalRecordApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Records"],
     }),
+    //Delete exercise tracker route (progress)
+    deleteProgressTracker: builder.mutation({
+      query: (trackerId) => ({
+        url: `${PR_URL}/delete-tracker/${trackerId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Records"],
+    }),
     //Add progress entry inside exercise tracker route (progress)
     addProgressEntry: builder.mutation({
       query: ({ entry, trackerId }) => ({
@@ -51,6 +59,7 @@ export const personalRecordApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useCreateProgressTrackerMutation,
+  useDeleteProgressTrackerMutation,
   useAddProgressEntryMutation,
   useDeleteProgressEntryMutation,
   useGetTrackersQuery,

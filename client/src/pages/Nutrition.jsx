@@ -449,13 +449,21 @@ const Nutrition = () => {
                   placeholder="milliliters"
                 />
 
-                <button
-                  type="button"
-                  className="btn btn-outline btn-secondary"
-                  disabled={isUpdatingWaterGoal}
-                  onClick={handleUpdateWaterButton}>
-                  {isUpdatingWaterGoal ? "Updating" : "Update Goal"}
-                </button>
+                <div className="relative inline-block">
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-secondary w-full"
+                    disabled={isUpdatingWaterGoal}
+                    onClick={handleUpdateWaterButton}>
+                    {isUpdatingWaterGoal ? "Updating" : "Update Goal"}
+                  </button>
+
+                  {isUpdatingWaterGoal && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-base-200/60 rounded-btn">
+                      <Loader />
+                    </div>
+                  )}
+                </div>
               </fieldset>
             </div>
             <div>
