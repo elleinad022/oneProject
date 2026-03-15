@@ -299,9 +299,9 @@ const Nutrition = () => {
   };
 
   const handleDeleteMealEntryButton = async (entry) => {
-    await deleteMealEntry({ entryId: entry._id }).unwrap();
-    toast.success("Meal Entry deleted successfully");
     try {
+      await deleteMealEntry({ entryId: entry._id }).unwrap();
+      toast.success("Meal Entry deleted successfully");
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -642,8 +642,8 @@ const Nutrition = () => {
                                         data-tip="Delete">
                                         <svg
                                           xmlns="http://www.w3.org/2000/svg"
-                                          width="32"
-                                          height="32"
+                                          width="24"
+                                          height="24"
                                           viewBox="0 0 24 24">
                                           <path
                                             fill="#fff"
@@ -1113,8 +1113,8 @@ const Nutrition = () => {
                                   data-tip="Delete">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="32"
-                                    height="32"
+                                    width="24"
+                                    height="24"
                                     viewBox="0 0 24 24">
                                     <path
                                       fill="#fff"
