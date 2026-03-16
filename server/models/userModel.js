@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
     enum: ["local", "google"],
     default: "local",
   },
+  profilePicture: { type: String, default: null },
 
   dailyCalorieGoal: { type: Number, default: 2000 },
   macros: {

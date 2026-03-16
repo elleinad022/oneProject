@@ -1,3 +1,4 @@
+import { log } from "console";
 import userModel from "../models/userModel.js";
 
 //@desc Gets user data
@@ -8,7 +9,7 @@ export const getUserData = async (req, res) => {
     const user = await userModel
       .findById(req.userId)
       .select(
-        "_id email name isVerified verifyOtpExpireAt resetOtpExpireAt otpCooldown dailyCalorieGoal macros dailyWaterGoal startWeight currentWeight goalWeight weightGoalStartedAt workoutTrackingIndex workoutWeekIndex",
+        "_id email name isVerified verifyOtpExpireAt resetOtpExpireAt otpCooldown dailyCalorieGoal macros dailyWaterGoal startWeight currentWeight goalWeight weightGoalStartedAt workoutTrackingIndex workoutWeekIndex profilePicture",
       );
 
     if (!user) {
@@ -33,9 +34,10 @@ export const getUserData = async (req, res) => {
         startWeight: user.startWeight,
         currentWeight: user.currentWeight,
         goalWeight: user.goalWeight,
-        weightGoalsStartedAt: user.weightGoalsStartedAt,
+        weightGoalStartedAt: user.weightGoalStartedAt,
         workoutTrackingIndex: user.workoutTrackingIndex,
         workoutWeekIndex: user.workoutWeekIndex,
+        profilePicture: user.profilePicture,
       },
     });
   } catch (error) {
@@ -116,5 +118,97 @@ export const addWaterGoal = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+import fs from "fs";
+
+//@desc Update user Profile Picture
+//Route PUT /api/user/profile-picture
+//@access private
+export const updateProfilePicture = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image uploaded",
+      });
+    }
+
+    //Deletes old image if it exists
+    if (user.profilePicture) {
+      const oldImagePath = `.${user.profilePicture}`;
+
+      fs.unlink(oldImagePath, (err) => {
+        if (err) console.log("Failed to delete old profile picture: ", err);
+      });
+    }
+
+    const newImagePath = `/uploads/profilePictures/${req.file.filename}`;
+
+    user.profilePicture = newImagePath;
+    await user.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Profile picture updated successfully",
+      profilePicture: newImagePath,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+//@desc Delete user Profile Picture
+//Route DELETE /api/user/profile-picture
+//@access Private
+export const deleteProfilePicture = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.profilePicture) {
+      return res.status(404).json({
+        success: false,
+        message: "User does not have a profile picture",
+      });
+    }
+
+    const imagePath = `.${user.profilePicture}`;
+
+    fs.unlink(imagePath, (err) => {
+      if (err) console.log("Failed to delete current profile picture", err);
+    });
+
+    user.profilePicture = null;
+
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Profile picture deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
