@@ -233,6 +233,13 @@ const Nutrition = () => {
 
       await addWeightEntry({ weight: parsedWeightEntry }).unwrap();
 
+      dispatch(
+        setCredentials({
+          ...userInfo,
+          currentWeight: parsedWeightEntry,
+        }),
+      );
+
       toast.success("Bodyweight entry for today added successfully");
       setWeightEntry("");
     } catch (err) {
