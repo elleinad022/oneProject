@@ -36,7 +36,7 @@ const ProfileUpdate = () => {
 
   const openOtpModal = async () => {
     if (userInfo.isVerified === true) {
-      console.log("Already Verified");
+      toast.error("Already verified");
       return;
     }
     try {

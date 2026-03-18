@@ -40,6 +40,25 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
+    // Update user profile picture (user)
+    updateProfilePicture: builder.mutation({
+      query: (formData) => ({
+        url: `${USERS_URL}/profile-picture`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    //Delete user profile picture (user)
+    deleteProfilePicture: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/profile-picture`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
+    }),
+
     // Register route (auth)
     register: builder.mutation({
       query: (data) => ({
@@ -128,4 +147,6 @@ export const {
   useGoogleLoginMutation,
   useUpdateUserCalorieGoalMutation,
   useUpdateUserWaterGoalMutation,
+  useUpdateProfilePictureMutation,
+  useDeleteProfilePictureMutation,
 } = usersApiSlice;

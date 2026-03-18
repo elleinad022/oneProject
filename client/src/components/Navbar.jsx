@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
 import { useNavigate, Link } from "react-router-dom";
@@ -7,6 +8,7 @@ import { useGetTodayCaloriesQuery } from "../slices/caloriesApiSlice";
 const Navbar = ({ children }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const [logoutApiCall] = useLogoutMutation();
+  const [preview, setPreview] = useState();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -131,7 +133,16 @@ const Navbar = ({ children }) => {
             <div className="flex items-center gap-3">
               <div className="avatar avatar-placeholder">
                 <div className="bg-neutral text-neutral-content w-12 rounded-full">
-                  <span>USER</span>
+                  <img
+                    src={
+                      preview ||
+                      (userInfo.profilePicture
+                        ? `http://localhost:4000${userInfo.profilePicture}`
+                        : "/default-avatar.png")
+                    }
+                    alt="Profile"
+                    className="size-24 rounded-full object-scale-down border"
+                  />
                 </div>
               </div>
 
