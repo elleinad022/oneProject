@@ -1,19 +1,26 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import {
   useUpdateProfilePictureMutation,
   useDeleteProfilePictureMutation,
+  useLazyGetUserDataQuery,
 } from "../slices/usersApiSlice";
+import { setCredentials } from "../slices/authSlice";
 
 const ProfilePictureUpdate = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const fileInputRef = useRef();
 
-  const [selectedFile, setSelectedFile] = useState();
-  const [preview, setPreview] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const [updateProfilePicture, { isLoading: isUpdatingPicture }] =
     useUpdateProfilePictureMutation();
+  const [deleteProfilePicture, { isLoading: isDeletingPicture }] =
+    useDeleteProfilePictureMutation();
+  const [getUser] = useLazyGetUserDataQuery();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -32,12 +39,44 @@ const ProfilePictureUpdate = () => {
       toast.error("Please select an image first");
       return;
     }
-    console.log("Uploading file:", selectedFile);
 
     const formData = new FormData();
     formData.append("profilePicture", selectedFile);
+    try {
+      await updateProfilePicture(formData).unwrap();
 
-    await updateProfilePicture(formData);
+      const updatedUser = await getUser().unwrap();
+      dispatch(setCredentials({ ...updatedUser.userData }));
+
+      toast.success("Profile picture updated");
+      setSelectedFile(null);
+      setPreview(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
+  };
+
+  const handleDeleteButton = async () => {
+    try {
+      await deleteProfilePicture().unwrap();
+
+      const updatedUser = await getUser().unwrap();
+      dispatch(setCredentials({ ...updatedUser.userData }));
+
+      toast.success("Current profile picture removed successfully");
+      setSelectedFile(null);
+      setPreview(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || err.error);
+    }
   };
   return (
     <div className="border border-base-300 rounded-box p-4 flex flex-col gap-4 mt-6">
@@ -58,15 +97,28 @@ const ProfilePictureUpdate = () => {
       </div>
 
       <input
+        ref={fileInputRef}
         type="file"
         accept="image/*"
         onChange={handleFileChange}
         className="file-input file-input-bordered w-full max-w-xs"
       />
 
-      <button className="btn btn-primary mt-2" onClick={handleUploadButton}>
-        Upload
-      </button>
+      <div className="flex flex-col">
+        <button
+          className="btn btn-primary mt-2"
+          onClick={handleUploadButton}
+          disabled={isUpdatingPicture}>
+          {isUpdatingPicture ? "Uploading..." : "Upload"}
+        </button>
+
+        <button
+          className="btn btn-error btn-soft mt-2"
+          onClick={handleDeleteButton}
+          disabled={isDeletingPicture}>
+          {isDeletingPicture ? "Removing..." : "Remove"}
+        </button>
+      </div>
     </div>
   );
 };
