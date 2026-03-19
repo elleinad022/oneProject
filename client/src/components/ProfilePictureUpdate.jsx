@@ -12,6 +12,7 @@ const ProfilePictureUpdate = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const fileInputRef = useRef();
+  const pictureRemoveRef = useRef();
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -114,11 +115,38 @@ const ProfilePictureUpdate = () => {
 
         <button
           className="btn btn-error btn-soft mt-2"
-          onClick={handleDeleteButton}
+          onClick={() => pictureRemoveRef.current.showModal()}
           disabled={isDeletingPicture}>
           {isDeletingPicture ? "Removing..." : "Remove"}
         </button>
       </div>
+      <dialog ref={pictureRemoveRef} className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Delete profile picture</h3>
+          <p className="py-4 text-sm opacity-60">
+            Are you sure you want to delete current profile picture? You cannot
+            undo this action
+          </p>
+          <div className="flex gap-4">
+            <button
+              className="btn btn-soft btn-error"
+              onClick={() => {
+                handleDeleteButton();
+                pictureRemoveRef.current.close();
+              }}>
+              Delete
+            </button>
+            <button
+              className="btn btn-soft"
+              onClick={() => pictureRemoveRef.current.close()}>
+              Cancel
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 };

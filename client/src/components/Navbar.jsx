@@ -4,6 +4,7 @@ import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import { useGetTodayCaloriesQuery } from "../slices/caloriesApiSlice";
+import { apiSlice } from "../slices/apiSlice";
 
 const Navbar = ({ children }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -26,6 +27,7 @@ const Navbar = ({ children }) => {
     try {
       await logoutApiCall().unwrap();
       dispatch(logout());
+      dispatch(apiSlice.util.resetApiState());
       navigate("/login");
     } catch (err) {
       console.log(err);
