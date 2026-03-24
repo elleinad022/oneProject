@@ -19,6 +19,8 @@ const WorkoutPlan = () => {
   const [resetWorkoutIndex, { isLoading: isResetting }] =
     useResetWorkoutIndexesMutation();
 
+  const hasData = data?.workoutPlan?.plan?.length > 0;
+
   const programSteps = data?.workoutPlan?.programSteps ?? [];
   const programTitle = data?.workoutPlan?.seo_title;
 
@@ -66,11 +68,20 @@ const WorkoutPlan = () => {
   return (
     <div className="overflow-x-auto">
       <div className="p-4 flex flex-row justify-between">
-        <h1 className="font-semibold truncate text-xl">{programTitle}</h1>
+        <h1
+          className={
+            hasData
+              ? "font-semibold truncate text-xl"
+              : "font-semibold truncate text-xl text-accent opacity-70"
+          }>
+          {hasData
+            ? programTitle
+            : "No selected workout program yet. Select a program in Workout"}
+        </h1>
         <button
           className="btn btn-neutral"
           type="button"
-          disabled={isResetting}
+          disabled={isResetting || !hasData}
           onClick={handleProgramReset}>
           {isResetting ? "Resetting..." : "Reset Program"}
         </button>

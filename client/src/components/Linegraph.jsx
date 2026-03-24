@@ -1,30 +1,13 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+
 import { useSelector } from "react-redux";
 import Loader from "./Loader";
 
 import { useGetWeeklyCaloriesQuery } from "../slices/caloriesApiSlice";
 import { useGetWaterWeekLogQuery } from "../slices/waterApiSlice";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-);
+
 
 const Linegraph = ({ type = "calories" }) => {
   const secondary = "#BD93F9";
@@ -95,6 +78,8 @@ const Linegraph = ({ type = "calories" }) => {
     ],
   };
 
+  const hasData = values && values.some((v) => v > 0);
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -136,7 +121,7 @@ const Linegraph = ({ type = "calories" }) => {
       },
       y: {
         beginAtZero: true,
-        suggestedMax: Math.max(...values, goal) + 200,
+        suggestedMax: hasData ? Math.max(...values, goal) + 200 : goal + 200,
         grid: {
           display: false, // remove horizontal grid lines
         },
@@ -145,13 +130,37 @@ const Linegraph = ({ type = "calories" }) => {
   };
 
   return (
-    <div className="w-full h-44 mx-auto">
+    <div className="relative w-full h-44 mx-auto">
       <Line
         data={data}
         options={{
           ...options,
+          plugins: {
+            ...options.plugins,
+            title: {
+              ...options.plugins.title,
+              text: hasData
+                ? type === "calories"
+                  ? "Weekly Calorie Intake"
+                  : "Weekly Water Intake"
+                : "No Data Yet",
+            },
+            tooltip: {
+              ...options.plugins.tooltip,
+              enabled: hasData,
+            },
+          },
         }}
+        className={!hasData ? "opacity-40" : ""}
       />
+
+      {!hasData && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-sm text-accent opacity-70 bg-base-200 px-3 py-1 rounded shadow">
+            No data yet. Start logging to see trends!
+          </p>
+        </div>
+      )}
     </div>
   );
 };

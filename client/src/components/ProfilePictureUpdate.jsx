@@ -90,7 +90,7 @@ const ProfilePictureUpdate = () => {
             preview ||
             (userInfo.profilePicture
               ? `http://localhost:4000${userInfo.profilePicture}`
-              : "/default-avatar.png")
+              : "/defAvatar.jpg")
           }
           alt="Profile"
           className="size-24 rounded-full object-cover border"

@@ -139,83 +139,94 @@ const Records = () => {
         </div>
 
         <div className="grid grid-cols-4 gap-4 py-4 w-7xl">
-          {exerciseTrackers?.map((tracker) => {
-            const latestEntry = tracker.entries?.[tracker.entries.length - 1];
-            const formatDate = (date) =>
-              new Date(date).toLocaleDateString("en-us", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              });
-            return (
-              <div
-                className="card card-border bg-base-100 w-74"
-                key={tracker._id}>
-                <div className="card-body">
-                  <h2 className="card-title text-primary font-bold">
-                    {tracker.exercise
-                      ?.toLowerCase()
-                      .replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </h2>
-                  <p>
-                    Latest Record:{" "}
-                    {latestEntry
-                      ? `${latestEntry.value} ${tracker.unit}`
-                      : "No records yet"}{" "}
-                    <br />
-                    <span className="text-xs opacity-60">
-                      {latestEntry ? formatDate(latestEntry.loggedAt) : ""}
-                    </span>
-                  </p>
-                  <div className="card-actions justify-end">
-                    <button
-                      className="btn btn-soft btn-primary"
-                      onClick={() => {
-                        setSelectedTrackerAddEntry(tracker);
-                        trackerAddEntryModalRef.current.showModal();
-                      }}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24">
-                        <path
-                          fill="#fff"
-                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="btn btn-soft btn-error"
-                      onClick={() => {
-                        setSelectedTrackerDelete(tracker);
-                        trackerDeleteModalRef.current.showModal();
-                      }}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24">
-                        <path
-                          fill="#fff"
-                          d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"
-                        />
-                      </svg>
-                    </button>
+          {exerciseTrackers?.length < 1 ? (
+            <>
+              <div className="col-span-4 flex justify-center items-center min-h-[60vh]">
+                <h2 className="text-accent text-center text-2xl opacity-60 animate-pulse">
+                  No existing exercise tracker found. Add your first exercise
+                  tracker
+                </h2>
+              </div>
+            </>
+          ) : (
+            exerciseTrackers?.map((tracker) => {
+              const latestEntry = tracker.entries?.[tracker.entries.length - 1];
+              const formatDate = (date) =>
+                new Date(date).toLocaleDateString("en-us", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                });
+              return (
+                <div
+                  className="card card-border bg-base-100 w-74"
+                  key={tracker._id}>
+                  <div className="card-body">
+                    <h2 className="card-title text-primary font-bold">
+                      {tracker.exercise
+                        ?.toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}
+                    </h2>
+                    <p>
+                      Latest Record:{" "}
+                      {latestEntry
+                        ? `${latestEntry.value} ${tracker.unit}`
+                        : "No records yet"}{" "}
+                      <br />
+                      <span className="text-xs opacity-60">
+                        {latestEntry ? formatDate(latestEntry.loggedAt) : ""}
+                      </span>
+                    </p>
+                    <div className="card-actions justify-end">
+                      <button
+                        className="btn btn-soft btn-primary"
+                        onClick={() => {
+                          setSelectedTrackerAddEntry(tracker);
+                          trackerAddEntryModalRef.current.showModal();
+                        }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24">
+                          <path
+                            fill="#fff"
+                            d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        className="btn btn-soft btn-error"
+                        onClick={() => {
+                          setSelectedTrackerDelete(tracker);
+                          trackerDeleteModalRef.current.showModal();
+                        }}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24">
+                          <path
+                            fill="#fff"
+                            d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"
+                          />
+                        </svg>
+                      </button>
 
-                    <button
-                      className="btn btn-soft btn-secondary"
-                      onClick={() => {
-                        setSelectedTrackerId(tracker._id);
-                        historyModalRef.current.showModal();
-                      }}>
-                      History
-                    </button>
+                      <button
+                        className="btn btn-soft btn-secondary"
+                        onClick={() => {
+                          setSelectedTrackerId(tracker._id);
+                          historyModalRef.current.showModal();
+                        }}>
+                        History
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
 
           <dialog
             ref={trackerAddEntryModalRef}

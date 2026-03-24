@@ -35,14 +35,14 @@ const Navbar = ({ children }) => {
   };
 
   return (
-    <div className="drawer lg:drawer-open overflow-x-hidden">
+    <div className="drawer lg:drawer-open">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center">
+      <div className="drawer-content flex flex-col h-screen overflow-hidden justify-center items-center">
         <label htmlFor="my-drawer-3" className="btn drawer-button lg:hidden">
           Open drawer
         </label>
         {/* Page content here */}
-        <main className="flex-1 overflow-hidden min-h-0">{children}</main>
+        <main className="flex-1 overflow-auto min-h-0">{children}</main>
       </div>
       <div className="drawer-side">
         <label
@@ -140,7 +140,7 @@ const Navbar = ({ children }) => {
                       preview ||
                       (userInfo.profilePicture
                         ? `http://localhost:4000${userInfo.profilePicture}`
-                        : "/default-avatar.png")
+                        : "/defAvatar.jpg")
                     }
                     alt="Profile"
                     className="size-24 rounded-full object-scale-down border"

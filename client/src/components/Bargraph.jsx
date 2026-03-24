@@ -1,9 +1,6 @@
-import React from "react";
-import { Chart as ChartJS, BarElement, Tooltip } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useGetTodayCaloriesQuery } from "../slices/caloriesApiSlice";
 import Loader from "./Loader";
-ChartJS.register(BarElement);
 
 const Bargraph = () => {
   const secondary = "#BD93F9";
@@ -24,6 +21,11 @@ const Bargraph = () => {
     fats: calTodayData?.todayLog?.fatsConsumed ?? 0,
   };
 
+  const hasData =
+    macrosConsumed.protein > 0 ||
+    macrosConsumed.carbs > 0 ||
+    macrosConsumed.fats > 0;
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -33,9 +35,10 @@ const Bargraph = () => {
       },
       title: {
         display: true,
-        text: "Consumed Today",
+        text: hasData ? "Consumed Today" : "No Data Yet",
       },
       tooltip: {
+        enabled: hasData,
         callbacks: {
           label: (context) => {
             const value = context.raw;
@@ -63,8 +66,15 @@ const Bargraph = () => {
   };
 
   return (
-    <div className="w-full h-44 mx-auto">
+    <div className="relative w-full h-44 mx-auto">
       <Bar data={data} options={options} />
+      {!hasData && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-sm text-accent opacity-70 bg-base-200 px-3 py-1 rounded shadow">
+            No data yet. Start logging your meals!{" "}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

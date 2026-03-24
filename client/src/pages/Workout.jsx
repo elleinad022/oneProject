@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
@@ -26,7 +26,17 @@ const Workout = () => {
   const [primaryGoal, setPrimaryGoal] = useState("");
   const [preferences, setPreferences] = useState("");
 
-  const appliedPlan = data?.workoutPlan?.plan ?? [];
+  const appliedPlan = data?.workoutPlan?.plan;
+
+  useEffect(() => {
+    if (
+      !isLoading &&
+      !isInitializing &&
+      (!appliedPlan || appliedPlan.length === 0)
+    ) {
+      initWorkoutPreferences();
+    }
+  }, [isLoading, isInitializing, appliedPlan, initWorkoutPreferences]);
 
   const handleUpdateButton = async () => {
     try {
@@ -50,15 +60,17 @@ const Workout = () => {
 
       const payload = {
         daysPerWeek:
-          parsedDays !== null ? parsedDays : currentPlan.schedule.daysPerWeek,
+          parsedDays !== null ? parsedDays : currentPlan?.schedule?.daysPerWeek,
         sessionDuration:
           parsedDuration !== null
             ? parsedDuration
-            : currentPlan.schedule.sessionDuration,
+            : currentPlan?.schedule?.sessionDuration,
         fitnessLevel:
-          fitnessLevel !== "" ? fitnessLevel : currentPlan.fitnessLevel,
-        primaryGoal: primaryGoal !== "" ? primaryGoal : currentPlan.primaryGoal,
-        preferences: preferences !== "" ? preferences : currentPlan.preferences,
+          fitnessLevel !== "" ? fitnessLevel : currentPlan?.fitnessLevel,
+        primaryGoal:
+          primaryGoal !== "" ? primaryGoal : currentPlan?.primaryGoal,
+        preferences:
+          preferences !== "" ? preferences : currentPlan?.preferences,
       };
 
       await updateWorkoutPreferences(payload).unwrap();
@@ -86,7 +98,7 @@ const Workout = () => {
     <div>
       <Navbar>
         <div className="grid grid-flow-row grid-cols-2 gap-2">
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-lg border p-4">
+          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4 col-span-2 xl:col-span-1">
             <legend className="fieldset-legend text-lg">
               Current preferences
             </legend>
@@ -105,7 +117,7 @@ const Workout = () => {
             <p className="text-sm">{data?.workoutPlan?.fitnessLevel}</p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Primary Goal</h2>
-            <p className="text-sm">{data?.workoutPlan?.goal}</p>
+            <p className="text-sm">{data?.workoutPlan?.primaryGoal}</p>
             <div className="divider m-0"></div>
             <h2 className="label text-lg">Preferences</h2>
             <p className="text-sm">{data?.workoutPlan?.preferences}</p>
@@ -113,7 +125,7 @@ const Workout = () => {
             <h2 className="label text-lg">Workout Program Title</h2>
             <p className="text-sm">{data?.workoutPlan?.seo_title}</p>
           </fieldset>
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-lg border p-4">
+          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4 col-span-2 xl:col-span-1">
             <legend className="fieldset-legend text-lg">
               Edit Preferences
             </legend>
@@ -209,7 +221,12 @@ const Workout = () => {
             <div className="card-body py-0">
               <h2 className="card-title">Current Workout Plan</h2>
               <div className="bg-base-300 shadow-sm flex flex-row justify-around max-h-[325px] overflow-y-auto rounded-xl">
-                {appliedPlan.map((dayPlan, index) => (
+                {(isInitializing || isLoading) && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-base-200/60 rounded-xl">
+                    <Loader />
+                  </div>
+                )}
+                {appliedPlan?.map((dayPlan, index) => (
                   <div key={dayPlan._id}>
                     <h3 className="label">Workout Day {index + 1}</h3>
 

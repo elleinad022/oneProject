@@ -28,6 +28,8 @@ const BodyWeight = () => {
       })
     : "---";
 
+  const hasData = goalWeight > 0 || currentWeight > 0 || startWeight > 0;
+
   const calculateProgressDetails = (startWeight, currentWeight, goalWeight) => {
     if (startWeight == null || currentWeight == null || goalWeight == null)
       return { moved: 0, total: 0, percentage: 0 };
@@ -54,7 +56,12 @@ const BodyWeight = () => {
     calculateProgressDetails(startWeight, currentWeight, goalWeight);
 
   return (
-    <div className="stats stats-vertical shadow">
+    <div
+      className={
+        hasData
+          ? "relative stats stats-vertical shadow"
+          : "relative stats stats-vertical shadow opacity-70"
+      }>
       <div className="stat">
         <div className="stat-figure text-primary">
           <svg
@@ -183,6 +190,13 @@ const BodyWeight = () => {
           Weight Status: {currentWeight > startWeight ? "Gaining" : "Losing"}
         </div>
       </div>
+      {!hasData && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-sm text-accent bg-base-200/90 backdrop-blur px-4 py-2 rounded-lg shadow">
+            No data yet. Set your goal and Log your weight in Nutrition!
+          </p>
+        </div>
+      )}
     </div>
   );
 };

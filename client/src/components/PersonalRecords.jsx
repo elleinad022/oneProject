@@ -6,6 +6,9 @@ import { useGetTrackersQuery } from "../slices/personalRecordSlice";
 const PersonalRecords = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const { data, isLoading } = useGetTrackersQuery();
+
+  const hasData = data?.trackers?.length > 0;
+
   const recordsOverview = data?.trackers?.map((tracker) => {
     const latestEntry =
       tracker.entries?.length > 0
@@ -39,9 +42,16 @@ const PersonalRecords = () => {
   }
   return (
     <ul className="list bg-base-300 rounded-xl shadow-md w-full max-h-full overflow-y-auto">
-      <li className="p-4 pb-2 text-lg tracking-wide">Records Overview</li>
-      <div className="divider m-0"></div>
-
+      <li
+        className={
+          hasData
+            ? "p-4 pb-2 text-lg tracking-wide"
+            : "p-4 pb-2 text-lg text-accent opacity-70"
+        }>
+        {hasData
+          ? "Records Overview"
+          : "No data yet. Log your first PR in Records!"}
+      </li>
       {recordsOverview.map((tracker) => {
         return (
           <li key={tracker._id} className="list-row flex items-center">

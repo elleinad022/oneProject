@@ -8,6 +8,30 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Legend,
+  BarElement,
+  Tooltip,
+} from "chart.js";
+
+ChartJS.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Legend,
+  BarElement,
+  Tooltip,
+);
 import store from "./store";
 import { Provider } from "react-redux";
 import PrivateRoute from "./components/PrivateRoute.jsx";

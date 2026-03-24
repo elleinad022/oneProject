@@ -436,9 +436,9 @@ const Nutrition = () => {
 
   return (
     <Navbar>
-      <div className="grid grid-flow-row grid-cols-2 gap-2">
+      <div className="grid grid-flow-row grid-cols-2 gap-2 mx-4">
         {/* Water section */}
-        <div className="bg-base-200 rounded-box mt-2 p-4 w-2xl flex flex-col gap-4">
+        <div className="bg-base-200 rounded-box mt-2 p-4 xl:w-2xl flex flex-col gap-4 col-span-2 xl:col-span-1">
           <Linegraph type="water"></Linegraph>
           <div className="flex flex-row justify-between">
             <Water></Water>
@@ -686,7 +686,7 @@ const Nutrition = () => {
         </div>
 
         {/* Bodyweight section */}
-        <div className="bg-base-200 rounded-box mt-2 p-4 w-2xl">
+        <div className="bg-base-200 rounded-box mt-2 p-4 xl:w-2xl col-span-2 xl:col-span-1">
           <div className="flex flex-row justify-between">
             <div className="max-w-2xs">
               <div className="flex flex-row gap-2 items-center">
