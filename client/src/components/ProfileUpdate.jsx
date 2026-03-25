@@ -91,7 +91,7 @@ const ProfileUpdate = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-4xl border p-4">
+      <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-xl xl:w-2xl 2xl:w-3xl border p-4">
         <legend className="fieldset-legend text-primary text-xl">
           Profile Information
         </legend>

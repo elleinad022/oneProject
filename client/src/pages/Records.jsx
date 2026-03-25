@@ -138,7 +138,7 @@ const Records = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-4 gap-4 py-4 w-7xl">
+        <div className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 py-4 w-full max-w-7xl">
           {exerciseTrackers?.length < 1 ? (
             <>
               <div className="col-span-4 flex justify-center items-center min-h-[60vh]">

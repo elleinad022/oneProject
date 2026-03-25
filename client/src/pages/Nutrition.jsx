@@ -438,12 +438,14 @@ const Nutrition = () => {
     <Navbar>
       <div className="grid grid-flow-row grid-cols-2 gap-2 mx-4">
         {/* Water section */}
-        <div className="bg-base-200 rounded-box mt-2 p-4 xl:w-2xl flex flex-col gap-4 col-span-2 xl:col-span-1">
+        <div className="bg-base-200 rounded-box mt-2 p-4 xl:w-full flex flex-col gap-4 col-span-2  xl:col-span-1">
           <Linegraph type="water"></Linegraph>
-          <div className="flex flex-row justify-between">
-            <Water></Water>
-            <div>
-              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-54 border p-4 max-h-[29vh] overflow-auto">
+          <div className="flex flex-row gap-4 flex-wrap justify-center">
+            <div className="flex-2 basis-0 min-w-40">
+              <Water />
+            </div>
+            <div className="flex-1 basis-0 min-w-40">
+              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4 max-h-[29vh] overflow-auto">
                 <legend className="fieldset-legend">Edit water goal</legend>
 
                 <label className="label">Water Amount</label>
@@ -473,8 +475,8 @@ const Nutrition = () => {
                 </div>
               </fieldset>
             </div>
-            <div>
-              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-54 border p-4 max-h-[29vh] overflow-auto">
+            <div className="flex-1 basis-0 min-w-40 w-full flex justify-center">
+              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-xs border p-4 max-h-[29vh] overflow-auto">
                 <legend className="fieldset-legend">
                   Add/Edit water entry
                 </legend>
@@ -686,8 +688,8 @@ const Nutrition = () => {
         </div>
 
         {/* Bodyweight section */}
-        <div className="bg-base-200 rounded-box mt-2 p-4 xl:w-2xl col-span-2 xl:col-span-1">
-          <div className="flex flex-row justify-between">
+        <div className="bg-base-200 rounded-box mt-2 p-4 xl:w-full col-span-2 xl:col-span-1">
+          <div className="flex flex-row gap-4 flex-wrap justify-center">
             <div className="max-w-2xs">
               <div className="flex flex-row gap-2 items-center">
                 <svg
@@ -780,7 +782,7 @@ const Nutrition = () => {
             </div>
             <div className="flex flex-col">
               <div>
-                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-72 border p-4 max-h-[29vh] overflow-auto">
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-xs border p-4 max-h-[29vh] overflow-auto">
                   <legend className="fieldset-legend">
                     Edit bodyweight goal and starting weight
                   </legend>
@@ -858,7 +860,7 @@ const Nutrition = () => {
                 </fieldset>
               </div>
               <div>
-                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-72 border p-4 max-h-[29vh] overflow-auto">
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full max-w-xs border p-4 max-h-[29vh] overflow-auto">
                   <legend className="fieldset-legend">
                     Add/Delete bodyweight log
                   </legend>
