@@ -6,7 +6,7 @@ import Navbar from "../components/Navbar";
 const Settings = () => {
   return (
     <Navbar>
-      <div className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap gap-6 justify-center pb-4">
         <ProfileUpdate />
         <ProfilePictureUpdate />
       </div>

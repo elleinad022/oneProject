@@ -967,8 +967,8 @@ const Nutrition = () => {
         {/* Calories/Meals section */}
         <div className="bg-base-200 rounded-box mb-2 p-4 w-full col-span-2">
           <div>
-            <div className="flex gap-6">
-              <div className="flex-1 overflow-auto max-h-[29vh] ">
+            <div className="flex gap-6 flex-wrap justify-center">
+              <div className="lg:flex-1 overflow-auto max-h-[29vh] ">
                 <table className="table">
                   {/* head */}
                   <thead>
@@ -1149,7 +1149,7 @@ const Nutrition = () => {
                 </table>
               </div>
 
-              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4 max-h-[29vh] overflow-auto">
+              <fieldset className="fieldset bg-base-200 border-base-300 rounded-box min-w-32 max-w-xs border p-4 max-h-[29vh] overflow-auto">
                 <legend className="fieldset-legend">Add meal entry</legend>
 
                 <label className="label">Description</label>
@@ -1201,11 +1201,10 @@ const Nutrition = () => {
                 </button>
               </fieldset>
             </div>
-            <div className="fieldset"></div>
           </div>
           <div className="divider m-0"></div>
-          <div className="flex flex-row">
-            <div className="flex-1 max-w-1/2">
+          <div className="flex flex-row flex-wrap">
+            <div className="w-full xl:flex-1 xl:max-w-1/2">
               <h3 className="text-lg opacity-80 pb-4">Edit goal macros</h3>
               <div className="grid grid-cols-2 grid-rows-2 gap-2">
                 <label className="input">
@@ -1260,7 +1259,7 @@ const Nutrition = () => {
                 </button>
               </div>
             </div>
-            <div className="flex flex-row">
+            <div className="flex flex-row max-lg:flex-wrap">
               <Doughnutgraph></Doughnutgraph>
               <Bargraph></Bargraph>
             </div>

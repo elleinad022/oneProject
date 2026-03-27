@@ -118,7 +118,7 @@ const Records = () => {
     <Navbar>
       <div className="h-full">
         <div
-          className="tooltip tooltip-left fixed z-99 bottom-30 right-20"
+          className="tooltip tooltip-left fixed z-10 bottom-30 right-20"
           data-tip="Add Tracker">
           <button
             className="btn btn-circle btn-primary btn-xl "
@@ -138,7 +138,7 @@ const Records = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 py-4 w-full max-w-7xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 py-4 w-full max-w-7xl">
           {exerciseTrackers?.length < 1 ? (
             <>
               <div className="col-span-4 flex justify-center items-center min-h-[60vh]">

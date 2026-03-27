@@ -38,11 +38,25 @@ const Navbar = ({ children }) => {
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col h-screen overflow-hidden justify-center items-center">
-        <label htmlFor="my-drawer-3" className="btn drawer-button lg:hidden">
-          Open drawer
-        </label>
         {/* Page content here */}
         <main className="flex-1 overflow-auto min-h-0">{children}</main>
+
+        <div className="w-full flex justify-center items-center">
+          <label
+            htmlFor="my-drawer-3"
+            className="btn btn-block backdrop-blur-md drawer-button lg:hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="42"
+              height="42"
+              viewBox="0 0 24 24">
+              <path
+                fill="#fff"
+                d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"
+              />
+            </svg>
+          </label>
+        </div>
       </div>
       <div className="drawer-side">
         <label

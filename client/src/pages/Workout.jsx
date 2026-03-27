@@ -97,7 +97,7 @@ const Workout = () => {
   return (
     <div>
       <Navbar>
-        <div className="grid grid-flow-row grid-cols-2 gap-2">
+        <div className="grid grid-flow-row grid-cols-2 gap-2 px-4">
           <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full border p-4 col-span-2 xl:col-span-1">
             <legend className="fieldset-legend text-lg">
               Current preferences
@@ -218,7 +218,7 @@ const Workout = () => {
             </div>
           </fieldset>
           <div className="col-span-2 card w-full bg-base-100 card-xl shadow-sm">
-            <div className="card-body py-0">
+            <div className="card-body py-0 mb-2">
               <h2 className="card-title">Current Workout Plan</h2>
               <div className="bg-base-300 shadow-sm flex flex-row justify-around max-h-[325px] overflow-y-auto rounded-xl">
                 {(isInitializing || isLoading) && (
@@ -228,11 +228,15 @@ const Workout = () => {
                 )}
                 {appliedPlan?.map((dayPlan, index) => (
                   <div key={dayPlan._id}>
-                    <h3 className="label">Workout Day {index + 1}</h3>
+                    <h3 className="label px-2 border-r-2 border-r-secondary">
+                      Workout Day {index + 1}
+                    </h3>
 
                     <ul>
                       {dayPlan.exercises?.map((exercise, exerciseIndex) => (
-                        <li className="text-sm border-t" key={exercise._id}>
+                        <li
+                          className="text-sm border-r-2 border-r-secondary px-2 pb-2"
+                          key={exercise._id}>
                           {exercise.name} <br />
                           <p>Reps: {exercise.repetitions}</p>
                           <p>Sets: {exercise.sets} </p>

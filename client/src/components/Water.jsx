@@ -33,11 +33,11 @@ const Water = () => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-stretch justify-center">
       <h2 className="w-full text-center bg-base-100 mb-4 rounded-xl">
         Water Intake
       </h2>
-      <div className="flex flex-row gap-x-5">
+      <div className="flex flex-row gap-x-5 overflow-x-auto w-full md:justify-center">
         <div
           className="radial-progress"
           style={{

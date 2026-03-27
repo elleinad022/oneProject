@@ -45,10 +45,10 @@ const FeaturedMeals = () => {
           </div>
         </button>
         <div className="absolute left-5 right-5 top-1/2 -translate-y-1/2 flex justify-between">
-          <a href="#slide3" className="btn btn-circle">
+          <a href="#slide3" className="btn btn-circle max-sm:btn-sm">
             ❮
           </a>
-          <a href="#slide2" className="btn btn-circle">
+          <a href="#slide2" className="btn btn-circle max-sm:btn-sm">
             ❯
           </a>
         </div>
@@ -57,12 +57,10 @@ const FeaturedMeals = () => {
         <div className="modal-box w-11/12 max-w-5xl max-h-6/12 glass shadow-2xl">
           <div className="grid grid-cols-2 gap-4 ">
             <div>
-              <h2 className="font-semibold text-xl text-primary text-left  leading-tight line-clamp-2 truncate">
+              <h2 className="font-semibold text-xl text-primary text-left  leading-tight">
                 {meals?.[0]?.title}
               </h2>
-              <p className="py-4 text-sm">
-                Press ESC key or click outside to close
-              </p>
+
               <p className="text-md text-zinc-100 text-left">
                 Ready In : {meals?.[0]?.readyInMinutes} Minutes <br /> Calories:{" "}
                 {meals?.[0]?.nutrition?.calories} <br /> Protein:{" "}
@@ -121,10 +119,10 @@ const FeaturedMeals = () => {
           </div>
         </button>
         <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-          <a href="#slide1" className="btn btn-circle">
+          <a href="#slide1" className="btn btn-circle max-sm:btn-sm">
             ❮
           </a>
-          <a href="#slide3" className="btn btn-circle">
+          <a href="#slide3" className="btn btn-circle max-sm:btn-sm">
             ❯
           </a>
         </div>
@@ -133,12 +131,10 @@ const FeaturedMeals = () => {
         <div className="modal-box w-11/12 max-w-5xl max-h-6/12 glass shadow-2xl">
           <div className="grid grid-cols-2 gap-4 ">
             <div>
-              <h2 className="font-semibold text-xl text-primary text-left  leading-tight line-clamp-2 truncate">
+              <h2 className="font-semibold text-xl text-primary text-left  leading-tight">
                 {meals?.[1]?.title}
               </h2>
-              <p className="py-4 text-sm">
-                Press ESC key or click outside to close
-              </p>
+
               <p className="text-md text-zinc-100 text-left">
                 Ready In : {meals?.[1]?.readyInMinutes} Minutes <br /> Calories:{" "}
                 {meals?.[1]?.nutrition?.calories} <br /> Protein:{" "}
@@ -197,10 +193,10 @@ const FeaturedMeals = () => {
           </div>
         </button>
         <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-          <a href="#slide2" className="btn btn-circle">
+          <a href="#slide2" className="btn btn-circle max-sm:btn-sm">
             ❮
           </a>
-          <a href="#slide1" className="btn btn-circle">
+          <a href="#slide1" className="btn btn-circle max-sm:btn-sm">
             ❯
           </a>
         </div>
@@ -209,12 +205,10 @@ const FeaturedMeals = () => {
         <div className="modal-box w-11/12 max-w-5xl max-h-6/12 glass shadow-2xl">
           <div className="grid grid-cols-2 gap-4 ">
             <div>
-              <h2 className="font-semibold text-xl text-primary text-left  leading-tight line-clamp-2 truncate">
+              <h2 className="font-semibold text-xl text-primary text-left  leading-tight">
                 {meals?.[2]?.title}
               </h2>
-              <p className="py-4 text-sm">
-                Press ESC key or click outside to close
-              </p>
+
               <p className="text-md text-zinc-100 text-left">
                 Ready In : {meals?.[2]?.readyInMinutes} Minutes <br /> Calories:{" "}
                 {meals?.[2]?.nutrition?.calories} <br /> Protein:{" "}

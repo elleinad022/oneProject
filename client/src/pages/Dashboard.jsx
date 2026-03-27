@@ -16,7 +16,7 @@ const Dashboard = () => {
       <Navbar>
         <AtomicBackground />
 
-        <div className="p-4 h-full">
+        <div className="p-4 min-h-0 xl:h-full">
           <div className="grid grid-cols-2 xl:grid-cols-4 xl:grid-rows-[auto_1fr] gap-3 w-full h-full">
             {/* LEFT */}
             <div className="col-span-2 xl:col-span-2 flex flex-col min-w-0 w-full gap-y-5 bg-base-300 p-4 rounded-xl">
