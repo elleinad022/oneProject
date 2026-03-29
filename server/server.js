@@ -17,9 +17,14 @@ const app = express();
 const port = process.env.PORT || 4000;
 connectDB();
 
+const frontendUrl =
+  process.env.NODE_ENV === "production"
+    ? process.env.ALLOWED_ORIGIN
+    : "http://localhost:5173";
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: frontendUrl,
     credentials: true,
   }),
 );

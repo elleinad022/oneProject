@@ -6,7 +6,7 @@ import Doughnutgraph from "../components/Doughnutgraph";
 import Bargraph from "../components/Bargraph";
 import BodyWeight from "../components/BodyWeight";
 import Water from "../components/Water";
-import FeaturedMeals from "../components/featuredMeals";
+import FeaturedMeals from "../components/FeaturedMeals";
 import WorkoutPlan from "../components/WorkoutPlan";
 import PersonalRecords from "../components/PersonalRecords";
 
