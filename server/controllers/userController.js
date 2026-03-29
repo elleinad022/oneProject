@@ -130,30 +130,17 @@ export const updateProfilePicture = async (req, res) => {
   try {
     const user = await userModel.findById(req.userId);
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
 
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "No image uploaded",
-      });
-    }
+    if (!req.file)
+      return res
+        .status(400)
+        .json({ success: false, message: "No image uploaded" });
 
-    //Deletes old image if it exists
-    if (user.profilePicture) {
-      const oldImagePath = `.${user.profilePicture}`;
-
-      fs.unlink(oldImagePath, (err) => {
-        if (err) console.log("Failed to delete old profile picture: ", err);
-      });
-    }
-
-    const newImagePath = `/uploads/profilePictures/${req.file.filename}`;
+    const newImagePath = req.file.path;
 
     user.profilePicture = newImagePath;
     await user.save();

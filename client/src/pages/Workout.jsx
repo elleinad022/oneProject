@@ -228,9 +228,7 @@ const Workout = () => {
                 )}
                 {appliedPlan?.map((dayPlan, index) => (
                   <div key={dayPlan._id}>
-                    <h3 className="label px-2 border-r-2 border-r-secondary">
-                      Workout Day {index + 1}
-                    </h3>
+                    <h3 className="label px-2">Workout Day {index + 1}</h3>
 
                     <ul>
                       {dayPlan.exercises?.map((exercise, exerciseIndex) => (

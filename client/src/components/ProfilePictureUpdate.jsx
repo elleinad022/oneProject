@@ -23,6 +23,8 @@ const ProfilePictureUpdate = () => {
     useDeleteProfilePictureMutation();
   const [getUser] = useLazyGetUserDataQuery();
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -89,7 +91,7 @@ const ProfilePictureUpdate = () => {
           src={
             preview ||
             (userInfo.profilePicture
-              ? `http://localhost:4000${userInfo.profilePicture}`
+              ? `${API_BASE_URL.replace(/\/$/, "")}${userInfo.profilePicture}`
               : "/defAvatar.jpg")
           }
           alt="Profile"

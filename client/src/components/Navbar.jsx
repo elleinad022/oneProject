@@ -23,6 +23,7 @@ const Navbar = ({ children }) => {
       ? `${caloriesLeft} kcal left`
       : `Over by ${caloriesLeft} kcal`;
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
   const handleLogout = async () => {
     try {
       await logoutApiCall().unwrap();
@@ -153,7 +154,7 @@ const Navbar = ({ children }) => {
                     src={
                       preview ||
                       (userInfo.profilePicture
-                        ? `http://localhost:4000${userInfo.profilePicture}`
+                        ? `${API_BASE_URL.replace(/\/$/, "")}${userInfo.profilePicture}`
                         : "/defAvatar.jpg")
                     }
                     alt="Profile"
