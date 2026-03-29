@@ -14,6 +14,7 @@ import workoutProgramRouter from "./routes/workoutPlanRoutes.js";
 import personalRecordRouter from "./routes/personalRecordRoutes.js";
 
 const app = express();
+app.set("trust proxy", 1);
 const port = process.env.PORT || 4000;
 connectDB();
 
