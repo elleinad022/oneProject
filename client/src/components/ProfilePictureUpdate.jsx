@@ -91,7 +91,9 @@ const ProfilePictureUpdate = () => {
           src={
             preview ||
             (userInfo.profilePicture
-              ? `${API_BASE_URL.replace(/\/$/, "")}${userInfo.profilePicture}`
+              ? userInfo.profilePicture.startsWith("http")
+                ? userInfo.profilePicture
+                : `${API_BASE_URL.replace(/\/$/, "")}${userInfo.profilePicture}`
               : "/defAvatar.jpg")
           }
           alt="Profile"

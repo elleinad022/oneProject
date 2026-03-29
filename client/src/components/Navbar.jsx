@@ -154,11 +154,13 @@ const Navbar = ({ children }) => {
                     src={
                       preview ||
                       (userInfo.profilePicture
-                        ? `${API_BASE_URL.replace(/\/$/, "")}${userInfo.profilePicture}`
+                        ? userInfo.profilePicture.startsWith("http")
+                          ? userInfo.profilePicture
+                          : `${API_BASE_URL.replace(/\/$/, "")}${userInfo.profilePicture}`
                         : "/defAvatar.jpg")
                     }
                     alt="Profile"
-                    className="size-24 rounded-full object-scale-down border"
+                    className="size-24 rounded-full object-cover border"
                   />
                 </div>
               </div>
