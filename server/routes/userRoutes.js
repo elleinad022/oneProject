@@ -1,6 +1,6 @@
 import express from "express";
 import userAuth from "../middleware/userAuth.js";
-import uploadProfilePicture from "../middleware/uploadProfilePicture.js";
+import { upload } from "../middleware/uploadProfilePicture.js";
 import {
   addCaloricGoals,
   addWaterGoal,
@@ -17,7 +17,7 @@ userRouter.post("/update-water-goal", userAuth, addWaterGoal);
 userRouter.put(
   "/profile-picture",
   userAuth,
-  uploadProfilePicture.single("profilePicture"),
+  upload.single("profilePicture"),
   updateProfilePicture,
 );
 userRouter.delete("/profile-picture", userAuth, deleteProfilePicture);
