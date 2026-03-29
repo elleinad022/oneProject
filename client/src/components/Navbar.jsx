@@ -160,7 +160,7 @@ const Navbar = ({ children }) => {
                         : "/defAvatar.jpg")
                     }
                     alt="Profile"
-                    className="size-24 rounded-full object-cover border"
+                    className="size-24 rounded-full object-scale-down border"
                   />
                 </div>
               </div>
