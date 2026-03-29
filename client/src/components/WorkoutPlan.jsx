@@ -86,7 +86,7 @@ const WorkoutPlan = () => {
           {isResetting ? "Resetting..." : "Reset Program"}
         </button>
       </div>
-      <table className="table table-xs md:table-md lg:table-xl table-zebra">
+      <table className="table table-xs md:table-md lg:table-lg table-zebra">
         {/* head */}
         <thead>
           <tr>

@@ -72,7 +72,7 @@ const Authform = ({ mode }) => {
   const sendResetOtp = async () => {
     if (!email) {
       toast.error(
-        "Please provide the email address to receive password reset OTP"
+        "Please provide the email address to receive password reset OTP",
       );
       return;
     }
@@ -100,7 +100,7 @@ const Authform = ({ mode }) => {
   };
 
   return (
-    <div className="card card-border bg-base-200 w-2xl shadow-md card-xl">
+    <div className="card card-border bg-base-200 w-sm sm:w-md lg:w-2xl shadow-md card-md lg:card-xl">
       <form
         onSubmit={handleSubmit}
         className="card-body flex flex-col justify-center items-center gap-3">

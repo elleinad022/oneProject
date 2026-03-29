@@ -926,7 +926,7 @@ const Nutrition = () => {
                         Press ESC key or click outside to close
                       </p>
                       <div className="flex w-full items-center justify-center">
-                        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-sm border p-4 max-h-[29vh] overflow-auto">
+                        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-full border p-2 max-h-[29vh] overflow-auto">
                           <label className="label">
                             Are you sure you want to delete today's bodyweight
                             log?
